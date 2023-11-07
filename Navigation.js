@@ -12,6 +12,8 @@ import HomeScreen from "./screens/home";
 import SettingsScreen from "./screens/SettingsScreen";
 import StackScreen from "./screens/StackScreen";
 import Drawer1 from "./screens/DrawerScreen";
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -19,9 +21,28 @@ const DrawerNavigate = createDrawerNavigator();
 
 function MyDrawer(){
     return (
-    <DrawerNavigate.Navigator>   
-        <DrawerNavigate.Screen name="TabHome" component={MyTabs} />
-        <DrawerNavigate.Screen name="Drawer" component={Drawer1} />             
+    <DrawerNavigate.Navigator 
+        screenOptions={{
+            title:'',
+            drawerActiveTintColor:'#bc955c',
+            
+            
+        }}
+        tabBarActiveTintColor='black'        
+    >   
+        <DrawerNavigate.Screen 
+            name="TabHome" component={MyTabs} 
+            options={{
+                title:'Inicio',
+                
+            }}        
+        />
+        <DrawerNavigate.Screen 
+            name="Drawer" component={Drawer1} 
+            options={{
+                title:'drawer1'
+            }}        
+        />             
     </DrawerNavigate.Navigator>
     );
 }
@@ -29,17 +50,22 @@ function MyDrawer(){
 function MyStack(){
     return (
         <HomeStack.Navigator
-            initialRouteName="HomeScreen"
+            initialRouteName="HomeScreen"            
         >
             <HomeStack.Screen
                 name="HomeScreen"
-                component={HomeScreen}
+                component={HomeScreen}        
+                options={{
+                    headerShown:false
+                }}        
             />
              <HomeStack.Screen
                 name="Stack"
                 component={StackScreen}
+                
                 options={{
                     headerBackTitle:"Regresar",
+                    title:'Titulo'    
                 }}
                 
             />
@@ -51,19 +77,22 @@ function MyTabs(){
     return (
         <Tab.Navigator
             initialRouteName="Home"
+            
             screenOptions={{
-                tabBarActiveTintColor:'purple'
+                tabBarActiveTintColor:'#c9aa7c',
+                headerShown:false
+                
             }}
         >
             <Tab.Screen 
                 name="Home" 
                 component={MyStack}
                 options={{
-                    tabBarLabel:'Feed',
+                    tabBarLabel:'Inicio',
                     tabBarIcon:({color,size}) =>(
                         <MaterialCommunityIcons name="home" size={30} color={color} />
                     ),
-                    tabBarBadge:10,
+                    // tabBarBadge:10,
                     headerShown:false
                 }}
             />
@@ -83,8 +112,8 @@ function MyTabs(){
 
 export default function Navigation(){
     return(
-        <NavigationContainer>
-            <MyDrawer/>
+        <NavigationContainer >
+            <MyDrawer />
         </NavigationContainer>
     );
 }

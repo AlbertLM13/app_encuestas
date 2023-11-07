@@ -7,7 +7,7 @@ const HomeScreen = () => {
   const navigation = useNavigation() ;
 
   return (
-    <View>
+    <View style={{backgroundColor: '#edeeee',flex:1}}>
       <Text
         style={{
           fontSize: 30,
@@ -22,7 +22,7 @@ const HomeScreen = () => {
         onPress={()=>navigation.navigate("Stack")}
 
         style={{
-          backgroundColor:"purple",
+          backgroundColor:"#bc955c",
           padding:10,
           marginTop:"20%",
           width:"50%",
