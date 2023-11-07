@@ -1,70 +1,80 @@
 import React, { useContext, useState } from "react";
 import { View,Text,TextInput, Button, TouchableOpacity,StyleSheet } from "react-native";
 import { AuthContext } from "../context/AuthContext";
+import Spinner from "react-native-loading-spinner-overlay";
+// import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const LoginScreen =({navigation}) =>{
 
     const[email,setEmail] = useState(null);
     const[password,setPassword] = useState(null);
-    const val = useContext(AuthContext);
+    const{isLoading,login} =  useContext(AuthContext);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.wrapper}>
-                <Text>{val}</Text>
-                <TextInput 
-                    style={styles.input} 
-                    value={email}
-                    placeholder="Ingrese Correo"   
-                    onChangeText={text=>setEmail(text)}
-                />
 
-                <TextInput 
-                    style={styles.input} 
-                    value={password}
-                    placeholder="Ingrese contraseña" 
-                    onChangeText={text=>setPassword(text)}
-                    secureTextEntry                
-                />
-            
-            <TouchableOpacity                                
+        // <SafeAreaView style={{flex:1}}>
 
-                style={{
-                    backgroundColor:"orange",
-                    padding:10,
-                    // marginTop:"20%",
-                    width:"50%",
-                    alignSelf:"center",
-                    borderRadius:10,
-                }}
-                >
-                <Text
+            <View style={styles.container}>
+                <Spinner visible={isLoading} />
+                <View style={styles.wrapper}>
+                
+                    <TextInput 
+                        style={styles.input} 
+                        value={email}
+                        placeholder="Ingrese Correo"   
+                        onChangeText={text=>setEmail(text)}
+                    />
+
+                    <TextInput 
+                        style={styles.input} 
+                        value={password}
+                        placeholder="Ingrese contraseña" 
+                        onChangeText={text=>setPassword(text)}
+                        secureTextEntry                
+                    />
+                
+                <TouchableOpacity                                
+
+                    onPress={() => {
+                        login(email,password);
+                    }}
+
                     style={{
-                    fontSize:18,
-                    textAlign:"center",
-                    color:"white",
-                    }}  
-                >
-                    Ingresar
-                </Text>
-            </TouchableOpacity>
-
-                <View style={{flexDirection:'row',marginTop:20}}>
-                    <Text>¿No estas registrado? </Text>
-                    <TouchableOpacity
-                        onPress={()=>navigation.navigate('Register')}
+                        backgroundColor:"orange",
+                        padding:10,                        
+                        width:"50%",
+                        alignSelf:"center",
+                        borderRadius:10,
+                    }}
                     >
-                        <Text 
-                            style={styles.link}
-                        > 
-                          Registrate aqui
-                        </Text>
+                    <Text
+                        style={{
+                        fontSize:18,
+                        textAlign:"center",
+                        color:"white",
+                        }}  
+                    >
+                        Ingresar
+                    </Text>
+                </TouchableOpacity>
 
-                    </TouchableOpacity>
+                    <View style={{flexDirection:'row',marginTop:20}}>
+                        <Text>¿No estas registrado? </Text>
+                        <TouchableOpacity
+                            onPress={()=>navigation.navigate('Register')}
+                        >
+                            <Text 
+                                style={styles.link}
+                            > 
+                            Registrate aqui
+                            </Text>
+
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-        </View>
+        // </SafeAreaView>
     );
 }
 

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TEST2",
-    "slug": "TEST2",
+    "name": "Ideas365",
+    "slug": "Ideas365",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.albertlm.TEST2"
+      "package": "com.albertlm.Ideas365"
     },
     "web": {
       "favicon": "./assets/favicon.png"

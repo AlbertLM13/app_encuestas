@@ -1,31 +1,30 @@
 import 'react-native-gesture-handler';
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React,{useContext} from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { Ionicons } from '@expo/vector-icons'; 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '../context/AuthContext';
 
 // Screens
-import HomeScreen from "../screens/home";
-import SettingsScreen from "../screens/SettingsScreen";
-import StackScreen from "../screens/StackScreen";
-import Drawer1 from "../screens/DrawerScreen";
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import Navigation from '../Navigation';
 
-const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
-const DrawerNavigate = createDrawerNavigator();
 
 const NavigationApp = ()=>{
-    return (
-        <SafeAreaView style={{flex:1}}>
-            <NavigationContainer>
-                <HomeStack.Navigator>
+    const{userInfo} =  useContext(AuthContext);
 
+    return (        
+        <NavigationContainer independent='true'>
+            <HomeStack.Navigator >
+                {userInfo.token != null ? (
+                    <HomeStack.Screen name="Home" component={Navigation}
+                        options={{
+                            headerShown:false
+                        }}
+                    />   
+                ):(
+                <>
                     <HomeStack.Screen 
                         name="Login" 
                         component={LoginScreen}
@@ -41,11 +40,11 @@ const NavigationApp = ()=>{
                             headerShown:false
                         }}
                     />
-                
-                    <HomeStack.Screen name="Home" component={HomeScreen}/>                
-                </HomeStack.Navigator>            
-            </NavigationContainer>
-        </SafeAreaView>
+                </>
+                )}                                                                      
+                               
+            </HomeStack.Navigator>            
+        </NavigationContainer>        
     );
 }
 
