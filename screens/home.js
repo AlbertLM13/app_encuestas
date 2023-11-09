@@ -1,11 +1,50 @@
-import React from "react";
-import { View, Text ,StyleSheet, TouchableOpacity} from "react-native";
+import React,{ useEffect,useContext } from "react";
+import { View, Text ,StyleSheet, TouchableOpacity,Alert} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 // import { SafeAreaView } from "react-native-safe-area-context";
+import {BackHandler} from "react-native"
+import { AuthContext } from "../context/AuthContext";
+
+
+// import {Dialog} from '@react-native-material/core';
+
+
 
 const HomeScreen = () => {
 
+  const{userInfo,logout} =  useContext(AuthContext);
   const navigation = useNavigation() ;
+
+  useEffect(() => {
+    const callback = ()=> {
+      Alert.alert(
+        'Cerrar sesion',
+        '¿Desa cerrar sesion?',
+        [
+          { text: "Cancelar", style: 'cancel', onPress: () => {} },
+          {
+            text: 'Salir',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            
+            onPress: () => {
+              logout();              
+            }//navigation.dispatch(e.data.action),
+          },
+        ]
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      callback
+    );
+
+    return () => backHandler.remove();
+}, []);
+
 
   return (
 

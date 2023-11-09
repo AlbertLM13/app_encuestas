@@ -2,18 +2,22 @@ import React, { useContext, useState } from "react";
 import { View,Text,TextInput, Button, TouchableOpacity,StyleSheet } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import Spinner from "react-native-loading-spinner-overlay";
-// import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 
-const LoginScreen =({navigation}) =>{
 
-    const[email,setEmail] = useState(null);
+const LoginScreen =({navigation}) =>{    
+            
+
+    // const {userInfo} =  useContext(AuthContext);
+    const[email,setEmail] = useState(null); 
     const[password,setPassword] = useState(null);
-    const{isLoading,login} =  useContext(AuthContext);
+    const{isLoading,login,userInfo,createObjectUser} =  useContext(AuthContext);
 
     return (
-
-        // <SafeAreaView style={{flex:1}}>
+        
+        <SafeAreaView style={{flex:1}}>
 
             <View style={styles.container}>
                 <Spinner visible={isLoading} />
@@ -37,7 +41,9 @@ const LoginScreen =({navigation}) =>{
                 <TouchableOpacity                                
 
                     onPress={() => {
-                        login(email,password);
+                                               
+                        login(email,password);                    
+                        
                     }}
 
                     style={{
@@ -59,7 +65,7 @@ const LoginScreen =({navigation}) =>{
                     </Text>
                 </TouchableOpacity>
 
-                    <View style={{flexDirection:'row',marginTop:20}}>
+                    <View style={{flexDirection:'row',marginTop:20,justifyContent:'center'}}>
                         <Text>¿No estas registrado? </Text>
                         <TouchableOpacity
                             onPress={()=>navigation.navigate('Register')}
@@ -74,11 +80,14 @@ const LoginScreen =({navigation}) =>{
                     </View>
                 </View>
             </View>
-        // </SafeAreaView>
+        </SafeAreaView>
     );
 }
 
+
 export default LoginScreen;
+
+
 
 const styles = StyleSheet.create({
     container:{
@@ -98,6 +107,6 @@ const styles = StyleSheet.create({
         height:40
     },
     link:{
-        color:'blue'
+        color:'blue',                
     }
 });

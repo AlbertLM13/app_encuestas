@@ -20,11 +20,10 @@ const HomeStack = createNativeStackNavigator();
 const DrawerNavigate = createDrawerNavigator();
 
 
-
 function MyDrawer(){
     const{userInfo} =  useContext(AuthContext);
     return (        
-    <DrawerNavigate.Navigator
+    <DrawerNavigate.Navigator 
         screenOptions={{
             title:'',
             drawerActiveTintColor:'#bc955c',                        
@@ -113,8 +112,8 @@ function MyTabs(){
 
 export default function Navigation(){
     return(
-        <NavigationContainer independent='true' >
+        // <NavigationContainer independent='true' >
             <MyDrawer />
-        </NavigationContainer>
+        // </NavigationContainer>
     );
 }
