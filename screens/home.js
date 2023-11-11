@@ -1,89 +1,192 @@
-import React,{ useEffect,useContext } from "react";
+import React,{ useEffect,useContext, useState } from "react";
 import { View, Text ,StyleSheet, TouchableOpacity,Alert} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-// import { SafeAreaView } from "react-native-safe-area-context";
-import {BackHandler} from "react-native"
 import { AuthContext } from "../context/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from 'react-native-paper';
+import CardReporte from "../components/TarjetaReporte";
+import axios from "axios";
+import { BASE_URL } from "../config";
 
 
 // import {Dialog} from '@react-native-material/core';
 
-
-
 const HomeScreen = () => {
 
+  const [reportes,setReportes] = useState([]);
   const{userInfo,logout} =  useContext(AuthContext);
   const navigation = useNavigation() ;
+  const IdUsuario = userInfo.IdUsuario;
+  const[isLoading,setIsLoading] = useState(false);  
 
-  useEffect(() => {
-    const callback = ()=> {
-      Alert.alert(
-        'Cerrar sesion',
-        '¿Desa cerrar sesion?',
-        [
-          { text: "Cancelar", style: 'cancel', onPress: () => {} },
-          {
-            text: 'Salir',
-            style: 'destructive',
-            // If the user confirmed, then we dispatch the action we blocked earlier
-            // This will continue the action that had triggered the removal of the screen
-            
-            onPress: () => {
-              logout();              
-            }//navigation.dispatch(e.data.action),
-          },
-        ]
-      );
-      return true;
-    };
+  useEffect(()=>{
+    GetReportes();
+  },[]);
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      callback
-    );
+  async function GetReportes(){
+    setIsLoading(true);
+    axios.post(`${BASE_URL}/reportes/CargarRerportes`,{
+         
+    },{headers:{
+      'Authorization': `Bearer ${userInfo.token}` 
+    }}).then(res =>{                
+        setIsLoading(false);  
+        setReportes(res.data);                              
+        console.log(res.data);
+    }).catch(e =>{
+        console.log(`Error ${e}`);
+        setIsLoading(false);
+    });
+  }
 
-    return () => backHandler.remove();
-}, []);
-
+  
 
   return (
+    
+    <SafeAreaView style={{flex:1,backgroundColor:'#DEB3DF'}}>
 
-    // <SafeAreaView style={{flex:1}}>
-      <View style={{backgroundColor: '#edeeee',flex:1}}>
-        <Text
+      <View  style={{backgroundColor:'#edeeee', flexDirection: 'row',justifyContent:'center'}}>
+
+        <Button 
           style={{
-            fontSize: 30,
-            textAlign: "center",
-            marginTop: "20%",
+            marginTop:5, 
+            marginBottom:5,   
+            marginEnd:5        
           }}
-        >
-          Home Screen
-        </Text>
-        <TouchableOpacity
-
-          onPress={()=>navigation.navigate("Stack")}
-
-          style={{
-            backgroundColor:"#bc955c",
-            padding:10,
-            marginTop:"20%",
-            width:"50%",
-            alignSelf:"center",
-            borderRadius:10,
-          }}
-        >
-          <Text
-            style={{
-              fontSize:15,
-              textAlign:"center",
-              color:"white",
-            }}  
+          textColor="green"
+          buttonColor="#B3D1AC"
+          icon="clipboard-check" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
           >
-            Go to Stack Screen
-          </Text>
-        </TouchableOpacity>
+            Solucionados
+        </Button>
+
+        <Button 
+          style={{
+            marginTop:5,  
+            marginBottom:5,
+            marginEnd:5     
+          }}
+          textColor="red"
+          buttonColor="#FFB3B3"
+          icon="clipboard-list" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Pendientes
+        </Button>                 
+
+        <Button 
+          style={{
+            marginTop:5,  
+            marginBottom:5,
+            marginEnd:5     
+          }}
+          textColor="#E3E3E3"
+          buttonColor="#9E9E9E"
+          icon="trash-can" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Basura
+        </Button>      
+
+
       </View>
-    // </SafeAreaView>
+
+      <View  style={{backgroundColor:'#edeeee', flexDirection: 'row',justifyContent:'center'}}>
+
+        <Button 
+          style={{
+            marginTop:5, 
+            marginBottom:5,   
+            marginEnd:5        
+          }}
+          textColor="#6E5F48"
+          buttonColor="#C5B8A2"
+          icon="highway" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Pavimentación
+        </Button>
+
+        <Button 
+          style={{
+            marginTop:5,  
+            marginBottom:5,
+            marginEnd:5     
+          }}
+          textColor="#CB8B0D"
+          buttonColor="#FFDD99"
+          icon="lightbulb" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Alumbrado
+        </Button>
+
+        <Button 
+          style={{
+            marginTop:5,  
+            marginBottom:5,
+            maxWidth:500          
+          }}
+          textColor="blue"
+          buttonColor="#B3E5FF"
+          icon="water" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Agua
+        </Button>    
+
+
+      </View>
+
+      <View  style={{backgroundColor:'#edeeee', flexDirection: 'row',justifyContent:'center'}}>
+
+        <Button 
+          style={{
+            marginTop:5, 
+            marginBottom:5,   
+            marginEnd:5        
+          }}
+          textColor="#769852"
+          buttonColor="#C6F198"
+          icon="pine-tree" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Parques
+        </Button>
+
+        <Button 
+          style={{
+            marginTop:5,  
+            marginBottom:5,
+            maxWidth:500          
+          }}
+          textColor="#E3E3E3"
+          buttonColor="#666666"
+          icon="bus" 
+          mode="elevated" 
+          onPress={() => console.log('Pressed')}
+          >
+            Transporte
+        </Button>   
+
+              
+
+      </View>
+
+      <View style={{backgroundColor: '#edeeee',flex:1}}>         
+
+        <CardReporte />
+        
+      </View>
+    </SafeAreaView>
   );
 };
 

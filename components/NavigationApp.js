@@ -10,15 +10,18 @@ import {
 } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext } from '../context/AuthContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { Ionicons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons,Entypo ,Ionicons,FontAwesome  } from '@expo/vector-icons'; 
+
 
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import Drawer1 from "../screens/DrawerScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import SettingsScreen from "../screens/MapaScreen";
 import StackScreen from "../screens/StackScreen";
 import HomeScreen from "../screens/home";
+import Mapa from '../screens/MapaScreen';
+import Perfil from '../screens/PerfilScreen';
+import Reportar from '../screens/ReportarSceen';
 
 
 
@@ -68,46 +71,46 @@ function CustomDrawerContent(props) {
     );
   }
 
-function MyDrawer(){        
+// function MyDrawer(){        
 
-    return (        
-    <DrawerNavigate.Navigator 
-        screenOptions={{
-            title:'',
-            drawerActiveTintColor:'orange',                                  
-        }}       
-        tabBarActiveTintColor='black'        
+//     return (        
+//     <DrawerNavigate.Navigator 
+//         screenOptions={{
+//             title:'',
+//             drawerActiveTintColor:'orange',                                  
+//         }}       
+//         tabBarActiveTintColor='black'        
         
-        drawerContent={props => <CustomDrawerContent {...props}/>}
+//         drawerContent={props => <CustomDrawerContent {...props}/>}
 
-    >   
-        <DrawerNavigate.Screen 
-            name="TabHome" component={MyTabs} 
-            options={{
-                title:'Inicio',
+//     >   
+//         <DrawerNavigate.Screen 
+//             name="TabHome" component={MyTabs} 
+//             options={{
+//                 title:'Inicio',
                 
-            }}        
-        />
-        <DrawerNavigate.Screen 
-            name="Drawer" component={Drawer1} 
-            options={{
-                title:'drawer1'
-            }}        
-        />               
+//             }}        
+//         />
+//         <DrawerNavigate.Screen 
+//             name="Drawer" component={Drawer1} 
+//             options={{
+//                 title:'drawer1'
+//             }}        
+//         />               
 
-    </DrawerNavigate.Navigator>
-    );
-}
+//     </DrawerNavigate.Navigator>
+//     );
+// }
 
 function MyTabs(){
     return (
-        <Tab.Navigator
+        <Tab.Navigator 
             initialRouteName="Home"
             
             screenOptions={{
-                tabBarActiveTintColor:'purple',
-                headerShown:false
-                
+                // tabBarActiveTintColor:'purple',
+                tabBarLabelStyle:{fontSize:15},
+                headerShown:false                
             }}
         >
             <Tab.Screen 
@@ -115,6 +118,7 @@ function MyTabs(){
                 component={MyStack}
                 options={{
                     tabBarLabel:'Inicio',
+                    tabBarActiveTintColor:'purple',
                     tabBarIcon:({color,size}) =>(
                         <MaterialCommunityIcons name="home" size={30} color={color} />
                     ),
@@ -123,15 +127,38 @@ function MyTabs(){
                 }}
             />
             <Tab.Screen 
-                name="Settings" 
-                component={SettingsScreen}
+                name="Mapa" 
+                component={Mapa}
                 options={{
-                    tabBarLabel:'Settings',
+                    tabBarLabel:'Mapa',
+                    tabBarActiveTintColor:'green',
                     tabBarIcon:({color,size}) =>(
-                        <Ionicons name="settings" size={30} color={color}  />
+                        <Entypo name="map" size={30} color={color} />
                     )
                 }}
-            />            
+            />       
+             <Tab.Screen 
+                name="Perfil" 
+                component={Perfil}
+                options={{
+                    tabBarLabel:'Perfil',
+                    tabBarActiveTintColor:'orange',
+                    tabBarIcon:({color,size}) =>(
+                        <Ionicons name="person-circle-sharp" size={30} color={color} />
+                    )
+                }}
+            />      
+            <Tab.Screen 
+                name="Reportar" 
+                component={Reportar}
+                options={{
+                    tabBarLabel:'Reportar',
+                    tabBarActiveTintColor:'red',
+                    tabBarIcon:({color,size}) =>(
+                        <FontAwesome name="flag" size={30} color={color} />
+                    )
+                }}
+            />        
         </Tab.Navigator>
     );
 }
@@ -168,7 +195,7 @@ export default function NavigationApp(){
 
     return(
         <NavigationContainer  >        
-            { userInfo.token ? <MyDrawer/> : <Main /> }
+            { userInfo.token ? <MyTabs/> : <Main /> }
         </NavigationContainer>
     );
 }

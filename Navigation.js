@@ -11,7 +11,7 @@ import { AuthContext } from './context/AuthContext';
 
 // Screens
 import HomeScreen from "./screens/home";
-import SettingsScreen from "./screens/SettingsScreen";
+import SettingsScreen from "./screens/MapaScreen";
 import StackScreen from "./screens/StackScreen";
 import Drawer1 from "./screens/DrawerScreen";
 

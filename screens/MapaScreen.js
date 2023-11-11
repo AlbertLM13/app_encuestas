@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const SettingsScreen = () => {
+const Mapa = () => {
   return (
-    <View>
+    <SafeAreaView style={{backgroundColor:'green'}}>
+    <View style={{flex:1}}>
       <Text
         style={{
           fontSize: 30,
@@ -11,10 +13,11 @@ const SettingsScreen = () => {
           marginTop: "20%",
         }}
       >
-        Settings Screen
+        Mapa
       </Text>
     </View>
+    </SafeAreaView>
   );
 };
 
-export default SettingsScreen;
+export default Mapa;
