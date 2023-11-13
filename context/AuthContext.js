@@ -36,9 +36,8 @@ export const AuthProvider = ({children}) =>{
             email,
             password,
         }).then(res =>{
-            let userInfo = res.data;     
-                                   
-            setUserInfo(userInfo);  
+            let userInfo = res.data;                                     
+            setUserInfo(userInfo);              
             AsyncStorage.setItem('userInfo',JSON.stringify(userInfo));                                
             setIsLoading(false);                                
         }).catch(e =>{

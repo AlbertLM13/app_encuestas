@@ -123,7 +123,7 @@ function MyTabs(){
                         <MaterialCommunityIcons name="home" size={30} color={color} />
                     ),
                     // tabBarBadge:10,
-                    headerShown:false
+                    headerShown:false                    
                 }}
             />
             <Tab.Screen 
@@ -148,17 +148,7 @@ function MyTabs(){
                     )
                 }}
             />      
-            <Tab.Screen 
-                name="Reportar" 
-                component={Reportar}
-                options={{
-                    tabBarLabel:'Reportar',
-                    tabBarActiveTintColor:'red',
-                    tabBarIcon:({color,size}) =>(
-                        <FontAwesome name="flag" size={30} color={color} />
-                    )
-                }}
-            />        
+          
         </Tab.Navigator>
     );
 }

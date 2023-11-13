@@ -1,23 +1,22 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import MapView from 'react-native-maps';
 
-const Mapa = () => {
+export default function App() {
   return (
-    <SafeAreaView style={{backgroundColor:'green'}}>
-    <View style={{flex:1}}>
-      <Text
-        style={{
-          fontSize: 30,
-          textAlign: "center",
-          marginTop: "20%",
-        }}
-      >
-        Mapa
-      </Text>
+    <View style={styles.container}>
+      <MapView style={styles.map} />
     </View>
-    </SafeAreaView>
   );
-};
+}
 
-export default Mapa;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+});
