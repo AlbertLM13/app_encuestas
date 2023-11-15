@@ -49,7 +49,7 @@ const HomeScreen = () => {
     
     <View style={{flex:1}}>
     
-      <SafeAreaView  style={{backgroundColor:"white"}}>       
+      <SafeAreaView  style={{backgroundColor:"#C699D8"}}>       
         <View style={{justifyContent:'center',flexDirection:'row'}}>
           <Image 
               source={require('../assets/Logo.png')}
