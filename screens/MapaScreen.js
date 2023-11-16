@@ -6,7 +6,8 @@ import MapView, {Callout, Marker,Polyline } from 'react-native-maps'
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../config";
-import { Button } from "react-native-paper";
+import { BASE_URL_IMAGE } from "../config";
+import { Modal, Portal, Button, PaperProvider } from 'react-native-paper';
 import Spinner from "react-native-loading-spinner-overlay";
 
 export default function App() {
@@ -28,6 +29,15 @@ const markersObject = [
   require('../assets/mapas/marker-icon-2x-green.png'),
 ];
 
+// MODAL
+const [visible, setVisible] = React.useState(false);
+
+const showModal = () => setVisible(true);
+const hideModal = () => setVisible(false);
+const [Detalle,setDetalle] = useState({});
+const containerStyle = {backgroundColor: 'white', padding: 20};
+// MODAL
+
 useEffect(()=>{
   GetMarkers();
 },[]);
@@ -48,7 +58,7 @@ async function GetMarkers(){
 }
 
 return (
-    
+  <PaperProvider>
     <View style={styles.container}>
 
       <SafeAreaView  style={{backgroundColor:"#97C18D"}}>       
@@ -84,7 +94,8 @@ return (
             }}
             title={marker.TipoProblema}
             description={marker.Descripcion}
-            key={marker.IdProblema}            
+            key={marker.IdProblema}    
+            // onPress={() =>console.log('Clicked')}        
           >
             
           <Image             
@@ -92,11 +103,29 @@ return (
             style={{height: 40, width:25 }} 
           />                   
 
-          <Callout>
-            <View >
-              <Text>text</Text>
-              <Button  onPress={() => console.log('Clicked')} ></Button>
+          <Callout          
+            width={250}
+            onPress={
+              ()=>{
+                showModal();
+                setDetalle(marker);
+              }
+            }
+          >
+            <View style={{alignItems:'center'}}>
+
+              <Text style={{fontSize:20,marginBottom:8}}>
+                {marker.TipoProblema}
+              </Text>
+              <Text style={{fontSize:15,marginBottom:8}}>
+                {marker.Descripcion}
+              </Text>
+              <Text style={{fontSize:15,marginBottom:8,textAlign:'center',color:'blue'}}>
+                Detalles
+              </Text>
+              
             </View>
+            
           </Callout>
 
 
@@ -105,6 +134,78 @@ return (
         
       </MapView>
     </View>
+    <Portal>
+      <Modal visible={visible} onDismiss={hideModal} style={{marginStart:10,marginEnd:10}} contentContainerStyle={containerStyle}>
+        <Text
+          style={{
+            textAlign:'left',
+            fontSize:25,
+            color:'purple',
+            marginBottom:10
+          }}
+        >{Detalle.CategoriaProblema}</Text>
+        <Text
+          style={{
+            textAlign:'left',
+            fontSize:18,            
+            marginBottom:10
+          }}
+        >Fecha: {Detalle.FechaReporte}</Text>
+
+        <View flexDirection="row" style={{marginBottom:10}}>
+
+          <Text
+            style={{
+              textAlign:'left',
+              fontSize:15,            
+              marginEnd:10,
+              color:'blue'
+            }}
+          >{Detalle.Estatus}</Text>
+
+          <Text
+            style={{
+              textAlign:'left',
+              fontSize:15,            
+              marginEnd:10
+            }}
+          >Prioridad: {Detalle.Prioridad}</Text>
+
+          <Text
+            style={{
+              textAlign:'left',
+              fontSize:15,            
+              marginEnd:10
+            }}
+          >Cobertura: {parseInt(Detalle.Cobertura)== 0 ? 'Individual' : 'Comunitaria'}</Text>
+
+        </View>
+        
+        <View alignItems="center" style={{marginBottom:10}}>
+          <Image
+            source={{ uri: BASE_URL_IMAGE+Detalle.RutaArchivo}} width={300} height={200} 
+          />
+        </View>
+
+        <Text
+          style={{
+            textAlign:'left',
+            fontSize:18,
+            color:'blue',
+            marginBottom:10
+          }}
+        >{Detalle.TipoProblema}</Text>
+
+        <Text
+          style={{
+            textAlign:'left',
+            fontSize:18,            
+          }}
+        >{Detalle.Descripcion}</Text>
+
+      </Modal>
+    </Portal>
+    </PaperProvider>
   );
 }
 
