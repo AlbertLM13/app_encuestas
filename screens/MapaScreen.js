@@ -2,7 +2,7 @@ import React,{ useEffect,useContext, useState } from "react";
 // import { View ,FlatList, Text, StyleSheet,Image } from "react-native";
 import { View, FlatList,Text ,StyleSheet, TouchableOpacity,Alert,Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView, {Callout, Marker,Polyline } from 'react-native-maps'
+import MapView, {Callout, Marker,Polygon } from 'react-native-maps'
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../config";
@@ -12,11 +12,12 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 export default function App() {
   const [origen,setOrigen] = React.useState({
-    latitude:23.743710,
-    longitud:-99.143365
+    latitude:23.74174,
+    longitud:-99.14599
 });
 
 const[markers,setMarkers] = useState([]);
+const[coordenates,seCoordenates] = useState([]);
 const{userInfo} =  useContext(AuthContext);  
 const[isLoading,setIsLoading] = useState(false);  
 const markersObject = [
@@ -40,6 +41,7 @@ const containerStyle = {backgroundColor: 'white', padding: 20};
 
 useEffect(()=>{
   GetMarkers();
+  GetCoordenates();
 },[]);
 
 async function GetMarkers(){
@@ -51,6 +53,23 @@ async function GetMarkers(){
   }}).then(res =>{                
       setIsLoading(false);  
       setMarkers(res.data);                                           
+  }).catch(e =>{
+      console.log(`Error ${e}`);
+      setIsLoading(false);
+  });
+}
+
+async function GetCoordenates(){
+  setIsLoading(true);
+  axios.post(`${BASE_URL}/reportes/GetCoordenates`,{
+        
+  },{headers:{
+    'Authorization': `Bearer ${userInfo.token}` 
+  }}).then(res =>{                
+      setIsLoading(false);   
+
+      seCoordenates(res.data);          
+      console.log(res.data);
   }).catch(e =>{
       console.log(`Error ${e}`);
       setIsLoading(false);
@@ -69,7 +88,7 @@ return (
           />   
         </View>
       </SafeAreaView>
-      <Spinner/>
+      <Spinner visible={isLoading}/>
       <View>
 
       </View>
@@ -130,7 +149,17 @@ return (
 
 
           </Marker>
-        ))}       
+        ))}
+
+        <Polygon
+          coordinates={
+            coordenates
+          }
+          strokeWidth={1}        // The width of the outline of the shape
+          strokeColor='#3FA72E'  // Color of the outline
+          fillColor='rgba(135,231,119,0.5)'  // Shape color
+          
+        />       
         
       </MapView>
     </View>
