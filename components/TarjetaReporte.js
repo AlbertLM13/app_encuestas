@@ -25,10 +25,12 @@ const CardReporte = ({
   Latitud,
   Longitud,
   cantidad,
-  mismoProblema
+  mismoProblema,
+  showModal,
+  setSelectedId
 
 }) => {
-  
+    
   const{userInfo} =  useContext(AuthContext);    
   const  iconTitle = ["null","highway", "lightbulb","highway"];  
   const  iconColor = ["#B3E5FF","#B3E5FF", "#FFDD99","#C5B8A2","#E3E3E3","#C6F198","#E3E3E3"];  
@@ -81,8 +83,19 @@ const CardReporte = ({
     </Card.Content>
     <Card.Cover style={{marginStart:5,marginEnd:5}} source={{ uri: BASE_URL_IMAGE+RutaArchivo}} />
     <Card.Actions>
-      <Button icon='map-marker'>Ver en mapa</Button>
-      <Button buttonColor='purple'><AntDesign name="like1" size={18} color="white" /> {mismoProblema > 1 ? mismoProblema : 0} Mismo problema</Button>
+      <Button 
+        icon='map-marker'
+        onPress={()=>
+          {
+            showModal();
+            setSelectedId([parseFloat(Latitud),parseFloat(Longitud)])       
+          }
+        }
+      >Ver en mapa</Button>
+      <Button 
+        buttonColor='purple'        
+      >
+        <AntDesign name="like1" size={18} color="white" /> {mismoProblema > 1 ? mismoProblema : 0} Mismo problema</Button>
     </Card.Actions>
   </Card>
   )

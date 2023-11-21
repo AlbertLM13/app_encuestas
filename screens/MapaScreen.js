@@ -67,9 +67,7 @@ async function GetCoordenates(){
     'Authorization': `Bearer ${userInfo.token}` 
   }}).then(res =>{                
       setIsLoading(false);   
-
-      seCoordenates(res.data);          
-      console.log(res.data);
+      seCoordenates(res.data);                
   }).catch(e =>{
       console.log(`Error ${e}`);
       setIsLoading(false);
@@ -101,8 +99,8 @@ return (
           latitudeDelta:0.09,
           longitudeDelta:0.04
         }}            
-        // showsUserLocation={true}
-        // showsMyLocationButton={true}   
+        showsUserLocation={true}
+        showsMyLocationButton={true}   
       >
           
         {markers.map(marker => (
@@ -151,7 +149,7 @@ return (
           </Marker>
         ))}
 
-        <Polygon
+        {coordenates.length > 0 ? <Polygon
           coordinates={
             coordenates
           }
@@ -159,7 +157,7 @@ return (
           strokeColor='#3FA72E'  // Color of the outline
           fillColor='rgba(135,231,119,0.5)'  // Shape color
           
-        />       
+        />:<></>}
         
       </MapView>
     </View>
