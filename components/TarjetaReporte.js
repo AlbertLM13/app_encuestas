@@ -87,7 +87,7 @@ const CardReporte = ({
         icon='map-marker'
         onPress={()=>
           {
-            showModal();
+            showModal()
             setSelectedId([parseFloat(Latitud),parseFloat(Longitud)])       
           }
         }

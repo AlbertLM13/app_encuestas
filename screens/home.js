@@ -95,55 +95,59 @@ const HomeScreen = () => {
           onPress={() => console.log('Pressed')}
         />       
       </View>
+      
 
       <Portal>
         <Modal 
           visible={visible} 
           onDismiss={hideModal} 
-          style={{marginStart:10,marginEnd:10}} 
+          style={{
+            marginStart:10,
+            marginEnd:10,
+            marginTop:200,
+            marginBottom:100
+          }} 
           contentContainerStyle={containerStyle}
-        >
-          
-        <MapView style={{
-            width:'100%',
-            height:'70%'
-          }}
-          zoomControlEnabled={true}
-          showsUserLocation={true}
-          showsMyLocationButton={true}  
+        >     
+            <MapView 
+              
+              style={{                
+                width:'100%',
+                height:'100%'
+              }}          
 
-          initialRegion={{
-            latitude : selectedId[0],
-            longitude: selectedId[1],
-            latitudeDelta:0.09,
-            longitudeDelta:0.04
-          }}      
+              minZoomLevel={15}
 
-        >
-        {console.log(selectedId[2])}
+              initialRegion={{
+                latitude : selectedId[0],
+                longitude: selectedId[1],
+                latitudeDelta:0.09,
+                longitudeDelta:0.04
+              }}      
 
-          <Marker 
-            coordinate={{
-              latitude: selectedId[0],
-              longitude: selectedId[1]
-            }}                                 
-          >
+            >        
+              
+              <Marker 
+                coordinate={{
+                  latitude : selectedId[0],
+                  longitude: selectedId[1]
+                }}                                 
+              >
 
-            <Image             
-              source={require('../assets/mapas/marker-icon-2x-blue.png')}             
-              style={{height: 40, width:25 }} 
-            /> 
+                <Image             
+                  source={require('../assets/mapas/marker-icon-2x-blue.png')}             
+                  style={{height: 40, width:25 }} 
+                /> 
 
-          </Marker>
+              </Marker>
 
-
-        </MapView>
+            </MapView>                           
 
         </Modal>
       </Portal>
 
-    </PaperProvider>    
-          
+       
+    </PaperProvider>
   );
 };
 
