@@ -5,8 +5,10 @@ import { Chip } from 'react-native-paper';
 import { View } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { BASE_URL_IMAGE } from '../config';
+import moment from 'moment/moment';
+import 'moment/locale/es' 
 
-
+moment.locale('es');
 
 const CardReporte = ({
   IdProblema,
@@ -35,8 +37,9 @@ const CardReporte = ({
   const  iconTitle = ["null","highway", "lightbulb","highway"];  
   const  iconColor = ["#B3E5FF","#B3E5FF", "#FFDD99","#C5B8A2","#E3E3E3","#C6F198","#E3E3E3"];  
   const iconColor2 = ["#B3E5FF","#7669E3", "#CB8B0D","#6E5F48","#666666","#769852","#9E9E9E"];  
-  return (
   
+  return (
+    
   <Card 
   mode='elevated'  
   style={{
@@ -49,7 +52,7 @@ const CardReporte = ({
 
     <Card.Title        
       title={CategoriaProblema}
-      subtitle="Hace 1 año"             
+      subtitle={moment(FechaCreacion).fromNow()}             
       left={
         props => <Avatar.Icon {...props}         
         icon = {iconTitle[IdCategoria]}         
