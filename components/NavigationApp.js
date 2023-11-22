@@ -21,7 +21,7 @@ import StackScreen from "../screens/StackScreen";
 import HomeScreen from "../screens/home";
 import Mapa from '../screens/MapaScreen';
 import Perfil from '../screens/PerfilScreen';
-import Reportar from '../screens/ReportarSceen';
+import ReportarScreen from '../screens/ReportarSceen';
 
 
 
@@ -32,7 +32,7 @@ const DrawerNavigate = createDrawerNavigator();
 
 
 function Main(){
-           
+    
     return (                 
         
         <HomeStackMain.Navigator 
@@ -166,8 +166,8 @@ function MyStack(){
                 }}        
             />
              <HomeStack.Screen
-                name="Stack"
-                component={StackScreen}
+                name="Reportar"
+                component={ReportarScreen}
                 
                 options={{
                     headerBackTitle:"Regresar",

@@ -8,7 +8,7 @@ import CardReporte from "../components/TarjetaReporte";
 import axios from "axios";
 import { BASE_URL } from "../config";
 import Spinner from "react-native-loading-spinner-overlay";
-import MapView, {Callout, Marker,Polygon } from 'react-native-maps'
+import MapView, {Callout, Marker,Polygon } from 'react-native-maps';
 
 
 // import {Dialog} from '@react-native-material/core';
@@ -19,7 +19,8 @@ const HomeScreen = () => {
   const{userInfo} =  useContext(AuthContext);  
   const[isLoading,setIsLoading] = useState(false);  
   const[selectedId, setSelectedId] = useState([23.74174,-99.14599]);  
-    
+  
+  const navigation  =useNavigation();
 
   // MODAL
   const [visible, setVisible] = React.useState(false);
@@ -92,7 +93,7 @@ const HomeScreen = () => {
             right: 0,
             bottom: 0,
           }}
-          onPress={() => console.log('Pressed')}
+          onPress={() => navigation.navigate('Reportar')}
         />       
       </View>
       

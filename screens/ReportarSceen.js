@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const Reportar = () => {
+const ReportarScreen = () => {
   return (
     <View>
       <Text
@@ -17,4 +17,4 @@ const Reportar = () => {
   );
 };
 
-export default Reportar;
+export default ReportarScreen;
