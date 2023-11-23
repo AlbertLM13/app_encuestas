@@ -171,7 +171,7 @@ function MyStack(){
                 
                 options={{
                     headerBackTitle:"Regresar",
-                    title:'Titulo'    
+                    title:'Reportar un problema'    
                 }}
                 
             />
