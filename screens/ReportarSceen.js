@@ -323,25 +323,17 @@ const containerStyle = {backgroundColor: 'white', padding: 150};
         <Modal 
           visible={visible} 
           onDismiss={hideModal} 
-          style={{
-            // backgroundColor:'white',                        
-            maxHeight:'100%',
-         
+          style={{                                 
+            maxHeight:'100%',         
           }}                           
           contentContainerStyle={containerStyle}
-        >  
+        >            
+          <Camera 
+            ref={ref => setCamera(ref)}            
+            type={type}                              
+            style={StyleSheet.absoluteFillObject}                                     
+          />
           
-            <Camera 
-              ref={ref => setCamera(ref)}
-              // style={styles.fixedRatio} 
-              type={type}                  
-              // ratio={'1:1'} 
-              style={StyleSheet.absoluteFillObject}             
-              
-              
-            />
-          
-
           <View style={{flexDirection:'row'}}>
             <IconButton
               style={{
