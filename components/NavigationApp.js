@@ -110,7 +110,10 @@ function MyTabs(){
             screenOptions={{
                 // tabBarActiveTintColor:'purple',
                 tabBarLabelStyle:{fontSize:15},
-                headerShown:false                
+                headerShown:false   ,
+                tabBarActiveBackgroundColor:'#6257FF',    
+                tabBarInactiveBackgroundColor:'#8983E0',
+                tabBarInactiveTintColor:'black'
             }}
         >
             <Tab.Screen 
@@ -118,7 +121,7 @@ function MyTabs(){
                 component={MyStack}
                 options={{
                     tabBarLabel:'Inicio',
-                    tabBarActiveTintColor:'purple',
+                    tabBarActiveTintColor:'#DC91FF',
                     tabBarIcon:({color,size}) =>(
                         <MaterialCommunityIcons name="home" size={30} color={color} />
                     ),
@@ -131,7 +134,7 @@ function MyTabs(){
                 component={Mapa}
                 options={{
                     tabBarLabel:'Mapa',
-                    tabBarActiveTintColor:'green',
+                    tabBarActiveTintColor:'#37C658',
                     tabBarIcon:({color,size}) =>(
                         <Entypo name="map" size={30} color={color} />
                     )

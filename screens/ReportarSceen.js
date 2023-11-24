@@ -1,36 +1,75 @@
-import React ,{useEffect} from "react";
-import { View, Text, StyleSheet,TextInput ,Platform,Image,ScrollView,TouchableOpacity} from "react-native";
+import React ,{useEffect,useContext} from "react";
+import { View, Text, StyleSheet,TextInput ,Platform,Image,ScrollView,FlatList} from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { RadioButton ,Button ,Banner ,FAB, Portal,Modal, PaperProvider,IconButton, MD3Colors  } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, CameraType } from 'expo-camera';
-import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
+import Spinner from "react-native-loading-spinner-overlay";
+import axios from "axios";
+import { BASE_URL } from "../config";
+import { AuthContext } from "../context/AuthContext";
+
+
 
 
 const ReportarScreen = () => {
 
+// Carga datos
+const{userInfo} =  useContext(AuthContext);  
+const [isLoading,setIsLoading] = useState(false);
+
+useEffect(()=>{
+  GetColoniasCategorias();
+},[]);
+
+async function GetColoniasCategorias(){
+  setIsLoading(true);
+  axios.post(`${BASE_URL}/reportes/GetCategorias`,{
+       
+  },{headers:{
+    'Authorization': `Bearer ${userInfo.token}` 
+  }}).then(res =>{                
+      setIsLoading(false);  
+      setItems3(res.data['coloniasFinal']);
+      setItems(res.data['categoriasFinal']);            
+  }).catch(e =>{
+      console.log(`Error ${e}`);
+      setIsLoading(false);
+  });
+} 
+
+async function GetProblema(){
+  setIsLoading(true);
+  axios.post(`${BASE_URL}/reportes/GetProblemas`,{
+       'IdCategoria':value
+  },{headers:{
+    'Authorization': `Bearer ${userInfo.token}` 
+  }}).then(res =>{                
+      setIsLoading(false);  
+      setItems2(res.data);
+      // console.log(res.data);
+               
+  }).catch(e =>{
+      console.log(`Error ${e}`);
+      setIsLoading(false);
+  });
+} 
+
+// 
+
 const [open1, setOpen1] = useState(false);
 const [value, setValue] = useState(null);
-const [items, setItems] = useState([
-  {label: 'Apple', value: 'apple'},
-  {label: 'Banana', value: 'banana'}
-]);
+const [items, setItems] = useState([]);
 
 const [open2, setOpen2] = useState(false);
 const [value2, setValue2] = useState(null);
-const [items2, setItems2] = useState([
-  {label: 'Apple2', value: 'apple'},
-  {label: 'Banana2', value: 'banana'}
-]);
+const [items2, setItems2] = useState([]);
 
 const [open3, setOpen3] = useState(false);
 const [value3, setValue3] = useState(null);
-const [items3, setItems3] = useState([
-  {label: 'Apple2', value: 'apple'},
-  {label: 'Banana2', value: 'banana'}
-]);
+const [items3, setItems3] = useState([]);
 
 // DATE
 
@@ -110,53 +149,99 @@ const hideModal = () => setVisible(false);
 const containerStyle = {backgroundColor: 'white', padding: 150};
 // MODAL
 
+DropDownPicker.setLanguage("ES");
+
+const [nextPage,setNextPage] = useState(false);
 
   return (    
 
     
+    
     <PaperProvider>
-      <View style={{backgroundColor:'white',flex:1}}>
-        <ScrollView>
-          <View style={{flexDirection:'column'}}>                
-                
+    
+    <Spinner visible={isLoading}/>
+    {!nextPage ? 
+      
+    <View style={{backgroundColor:'white',flex:1}}>
 
-            <View style={{marginTop:10,marginStart:5,marginEnd:5,marginBottom:10}}>
+      <View style={{flexDirection:'column'}}>                               
 
-              <View style={{alignItems:'center',marginBottom:10}}>
-                <Text style={{fontSize:20}}>Categoria:</Text>
-              </View>
+        <View style={{marginTop:10,marginStart:5,marginEnd:5,marginBottom:10}}>
 
-              <DropDownPicker            
-
-                placeholder="Seleccione Categoria"
-                open={open1}
-                value={value}
-                items={items}
-                setOpen={setOpen1}
-                setValue={setValue}
-                setItems={setItems}
-              />
-            </View>
-
-            <View style={{marginStart:5,marginEnd:5,zIndex:-1}}>
-
-              <View style={{alignItems:'center',marginBottom:10}}>
-                <Text style={{fontSize:20}}>Problema:</Text>
-              </View>
-
-              <DropDownPicker        
-
-                placeholder="Seleccione Problema"
-                open={open2}
-                value={value2}
-                items={items2}
-                setOpen={setOpen2}
-                setValue={setValue2}
-                setItems={setItems2}
-              />
-            </View>
-
+          <View style={{alignItems:'center',marginBottom:10,zIndex:1}}>
+            <Text style={{fontSize:20}}>Colonia:</Text>
           </View>
+
+          <DropDownPicker            
+
+            placeholder="Seleccione la colonia"
+            open={open3}
+            value={value3}
+            items={items3}
+            setOpen={setOpen3}
+            setValue={setValue3}
+            setItems={setItems3}
+            autoScroll={true}
+            searchable={true}
+            maxHeight={350}
+          />
+        </View>
+
+
+        <View style={{marginTop:10,marginStart:5,marginEnd:5,marginBottom:10}}>
+
+          <View style={{alignItems:'center',marginBottom:10,zIndex:1}}>
+            <Text style={{fontSize:20}}>Categoria:</Text>
+          </View>
+
+          <DropDownPicker            
+
+            placeholder="Seleccione Categoria"
+            open={open1}
+            value={value}
+            items={items}
+            setOpen={setOpen1}
+            setValue={setValue}
+            setItems={setItems}
+            autoScroll={true}
+            zIndex={999}
+            onChangeValue={GetProblema}
+            
+
+          />
+        </View>
+
+        <View style={{marginStart:5,marginEnd:5}}>
+
+          <View style={{alignItems:'center',marginBottom:10}}>
+            <Text style={{fontSize:20}}>Problema:</Text>
+          </View>
+
+          <DropDownPicker        
+
+            placeholder="Seleccione Problema"
+            open={open2}
+            value={value2}
+            items={items2}
+            setOpen={setOpen2}
+            setValue={setValue2}
+            setItems={setItems2}
+            autoScroll={true}
+          />
+        </View>        
+
+      </View>
+
+
+      
+
+    </View>
+
+    :
+      <View style={{backgroundColor:'white',flex:1}}>
+       
+        <ScrollView style={{zIndex:-20}}>
+         
           
           {/* DATE */}    
           
@@ -194,25 +279,9 @@ const containerStyle = {backgroundColor: 'white', padding: 150};
                                         
           {/* DATE */}
 
-          <View style={{marginStart:5,marginEnd:5,marginBottom:10,zIndex:-2}}>
+          
 
-            <View style={{alignItems:'center',marginBottom:10}}>
-              <Text style={{fontSize:20}}>Colonia:</Text>
-            </View>
-
-            <DropDownPicker        
-
-              placeholder="Seleccione Colonia"
-              open={open3}
-              value={value3}
-              items={items3}
-              setOpen={setOpen3}
-              setValue={setValue3}
-              setItems={setItems3}
-            />
-          </View>
-
-          <View style={{alignItems:'center',marginBottom:10,zIndex:-4}}>
+          <View style={{alignItems:'center',marginBottom:10}}>
             <Text style={{fontSize:20}}>Cobertura:</Text>
 
             <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -240,7 +309,7 @@ const containerStyle = {backgroundColor: 'white', padding: 150};
           </View>
 
 
-          <View style={{alignItems:'center',marginBottom:10,marginTop:10,zIndex:-4}}>
+          <View style={{alignItems:'center',marginBottom:10,marginTop:10}}>
             <Text style={{fontSize:20}}>Prioridad:</Text>
 
             <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -317,6 +386,7 @@ const containerStyle = {backgroundColor: 'white', padding: 150};
           </View>
         </ScrollView>
       </View>
+    }
 
     {/* CAMARA */}
 
@@ -386,6 +456,7 @@ const containerStyle = {backgroundColor: 'white', padding: 150};
       {/* CAMARA */}
 
     </PaperProvider>
+    
   );
 };
 
@@ -405,7 +476,7 @@ const styles = StyleSheet.create({
     marginTop:10,
     height:100,
     textAlignVertical: 'top',
-    zIndex:-10
+    
   },
   cameraContainer: {
     flex: 1,
