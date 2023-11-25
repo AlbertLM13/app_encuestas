@@ -19,7 +19,10 @@
     "@react-navigation/stack": "^6.3.20",
     "axios": "^1.6.0",
     "expo": "~49.0.15",
+    "expo-camera": "~13.4.4",
     "expo-constants": "^14.4.2",
+    "expo-get-location": "^16.0.3",
+    "expo-image-picker": "~14.3.2",
     "expo-modules-core": "~1.5.12",
     "expo-status-bar": "~1.6.0",
     "moment": "^2.29.4",
@@ -32,9 +35,7 @@
     "react-native-paper": "^5.11.1",
     "react-native-reanimated": "~3.3.0",
     "react-native-safe-area-context": "4.6.3",
-    "react-native-screens": "~3.22.0",
-    "expo-image-picker": "~14.3.2",
-    "expo-camera": "~13.4.4"
+    "react-native-screens": "~3.22.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
