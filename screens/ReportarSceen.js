@@ -13,10 +13,11 @@ import { AuthContext } from "../context/AuthContext";
 import MapView, {Callout, Marker,Polygon } from 'react-native-maps';
 // import Geolocation from '@react-native-community/geolocation';
 import * as Location from 'expo-get-location'
-import { LocationObject } from "expo-get-location";
-import { useNavigation } from "@react-navigation/core";
-
-
+// import { LocationObject } from "expo-get-location";
+// import { useNavigation } from "@react-navigation/core";
+// import turf from '@turf/boolean-point-in-polygon';
+import turf,{point,polygon,booleanPointInPolygon} from '@turf/turf'
+// import point from '@turf/boolean-point-in-polygon'
 
 
 const ReportarScreen = () => {
@@ -73,15 +74,32 @@ async function GetCoordenates(){
   }}).then(res =>{                
       setIsLoading(false);   
       seCoordenates(res.data);                
+      convertPolygon(res.data);
+
   }).catch(e =>{
       console.log(`Error ${e}`);
       setIsLoading(false);
   });
 }
 
+function convertPolygon(data){
+
+  var array = [];
+
+  data.forEach(element => {
+    array.push([element.latitude,element.longitude]);
+  });
+
+  array.push(data[0].latitude,data[0].longitude)
+
+  setPolygonCoordenates(array);
+}
+
+const[dentroZona,setDentroZona] = useState(false);
 const[coordenates,seCoordenates] = useState([]);
-const [currentLocation, setCurrentLocation] = useState(null);
-const [initialRegion, setInitialRegion] = useState(null);
+const[polygonCoordenates,setPolygonCoordenates] = useState([]);
+const[currentLocation, setCurrentLocation] = useState(null);
+const[initialRegion, setInitialRegion] = useState(null);
 
 const GetLocation = async () => {
 
@@ -208,7 +226,7 @@ const containerStyle = {backgroundColor: 'white', padding: 150};
   const [visibleMapa, setVisibleMapa] = React.useState(false);
   const showModalMapa = () => setVisibleMapa(true);
   const hideModalMapa = () => setVisibleMapa(false); 
-  const containerStyleMapa = {backgroundColor: 'white', padding: 10,height:'130%'};
+  const containerStyleMapa = {backgroundColor: 'white', padding: 15,height:'130%'};
 
   const [origin,SetOrigin] = useState([]);
   
@@ -307,150 +325,154 @@ const [nextPage,setNextPage] = useState(false);
             setItems={setItems2}
             autoScroll={true}
             zIndex={888}
-          />
+          />          
 
       </View>
 
       {/* DATE */}    
-          
-      <View
-        style={{alignItems:'center',zIndex:-2,marginTop:10,marginBottom:10,marginStart:20,marginEnd:20}}        
-      >
-        <Text style={{fontSize:20,marginBottom:5}}>Fecha inicio:</Text>
-        <Button 
-          onPress={showDatepicker}
-          mode="outlined"          
-          textColor="blue"   
-          style={{            
-            height:50,        
-            width:'70%',                           
-            flexDirection:'row',
-            alignContent:'center'
+      
+      <ScrollView>
+      
+        <View
+          style={{alignItems:'center',zIndex:-2,marginTop:10,marginBottom:10,marginStart:20,marginEnd:20}}        
+        >
+          <Text style={{fontSize:20,marginBottom:5}}>Fecha inicio:</Text>
+          <Button 
+            onPress={showDatepicker}
+            mode="outlined"          
+            textColor="blue"   
+            style={{            
+              height:50,        
+              width:'70%',                           
+              flexDirection:'row',
+              alignContent:'center'
 
+            }}
+          ><Text style={{fontSize:18,width:'80%',height:30,alignSelf:'center'}}>{date.toLocaleString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'})}</Text></Button>          
+
+        </View>    
+        
+        {show && (
+          <>
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={'date'}
+              is24Hour={false}
+              onChange={onChange}
+              display="spinner"
+              maximumDate={new Date()}            
+              locale="es-ES"
+              positiveButton={{label: 'OK', textColor: 'black'}} 
+              negativeButton={{label: 'Cancel', textColor: 'gray'}}
+              // style={{flex: 1}}
+            />          
+          </>
+        )}
+                                      
+        {/* DATE */}
+
+        <View 
+          style={{
+            alignItems:'center',
+            marginTop:10,
+            marginBottom:10,      
+            zIndex:-2    
           }}
-        ><Text style={{fontSize:18,width:'80%',height:30,alignSelf:'center'}}>{date.toLocaleString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'})}</Text></Button>          
+        >
+          <Text style={{fontSize:20}}>Cobertura:</Text>
 
-      </View>    
-      
-      {show && (
-        <>
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={'date'}
-            is24Hour={false}
-            onChange={onChange}
-            display="spinner"
-            maximumDate={new Date()}            
-            locale="es-ES"
-            positiveButton={{label: 'OK', textColor: 'black'}} 
-            negativeButton={{label: 'Cancel', textColor: 'gray'}}
-            style={{flex: 1}}
-          />          
-        </>
-      )}
-                                    
-      {/* DATE */}
+          <View 
+            style={{
+              flexDirection:'row',
+              alignItems:'center',            
+              padding:10,            
+              borderWidth:1,
+              borderColor:'black',
+              borderRadius:5,
+              paddingHorizontal:14,
+              height:60,            
 
-      <View 
-        style={{
-          alignItems:'center',
-          marginTop:10,
-          marginBottom:10,      
-          zIndex:-2    
-        }}
-      >
-        <Text style={{fontSize:20}}>Cobertura:</Text>
+            }}>
 
-        <View 
-          style={{
-            flexDirection:'row',
-            alignItems:'center',            
-            padding:10,            
-            borderWidth:1,
-            borderColor:'black',
-            borderRadius:5,
-            paddingHorizontal:14,
-            height:60,            
+            <View style={{flexDirection:'row',alignItems:'center',marginEnd:10}}>
+              <Text style={{fontSize:20,color:'blue'}} onPress={() => setCobertura('0')}>Individual</Text>
+              <RadioButton
+                value="0"          
+                status={ cobertura === '0' ? 'checked' : 'unchecked' }
+                onPress={() => setCobertura('0')}
+              />
+            </View>
 
-          }}>
+            <View style={{flexDirection:'row',alignItems:'center'}}>
+              <Text style={{fontSize:20,color:'blue'}} onPress={() => setCobertura('1')}>Comunitario</Text>
+              <RadioButton
+                value="1"
+                status={ cobertura === '1' ? 'checked' : 'unchecked' }
+                onPress={() => setCobertura('1')}
+              />
+            </View>
 
-          <View style={{flexDirection:'row',alignItems:'center',marginEnd:10}}>
-            <Text style={{fontSize:20,color:'blue'}} onPress={() => setCobertura('0')}>Individual</Text>
-            <RadioButton
-              value="0"          
-              status={ cobertura === '0' ? 'checked' : 'unchecked' }
-              onPress={() => setCobertura('0')}
-            />
-          </View>
+          </View>  
 
-          <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Text style={{fontSize:20,color:'blue'}} onPress={() => setCobertura('1')}>Comunitario</Text>
-            <RadioButton
-              value="1"
-              status={ cobertura === '1' ? 'checked' : 'unchecked' }
-              onPress={() => setCobertura('1')}
-            />
-          </View>
+        </View>
+        
+        <View style={{alignItems:'center',marginBottom:10,marginTop:10}}>
+          <Text style={{fontSize:20}}>Prioridad:</Text>
 
-        </View>  
+          <View 
+            style={{
+              flexDirection:'row',
+              alignItems:'center',            
+              padding:10,            
+              borderWidth:1,
+              borderColor:'black',
+              borderRadius:5,
+              paddingHorizontal:14,
+              height:60, 
+            }}>
 
-      </View>
-      
-      <View style={{alignItems:'center',marginBottom:10,marginTop:10}}>
-        <Text style={{fontSize:20}}>Prioridad:</Text>
+            <View style={{flexDirection:'row',alignItems:'center',marginEnd:10}}>
+              <Text style={{fontSize:20,color:'blue'}} onPress={() => setPrioridad('1')}>Alta</Text>
+              <RadioButton
+                value="1"          
+                status={ prioridad=== '1' ? 'checked' : 'unchecked' }
+                onPress={() => setCobertura('1')}
+              />
+            </View>
 
-        <View 
-          style={{
-            flexDirection:'row',
-            alignItems:'center',            
-            padding:10,            
-            borderWidth:1,
-            borderColor:'black',
-            borderRadius:5,
-            paddingHorizontal:14,
-            height:60, 
-          }}>
+            <View style={{flexDirection:'row',alignItems:'center',marginEnd:10}}>
+              <Text style={{fontSize:20,color:'blue'}} onPress={() => setPrioridad('2')}>Media</Text>
+              <RadioButton
+                value="2"
+                status={ prioridad === '2' ? 'checked' : 'unchecked' }
+                onPress={() => setCobertura('2')}
+              />
+            </View>
 
-          <View style={{flexDirection:'row',alignItems:'center',marginEnd:10}}>
-            <Text style={{fontSize:20,color:'blue'}} onPress={() => setPrioridad('1')}>Alta</Text>
-            <RadioButton
-              value="1"          
-              status={ prioridad=== '1' ? 'checked' : 'unchecked' }
-              onPress={() => setCobertura('1')}
-            />
-          </View>
+            <View style={{flexDirection:'row',alignItems:'center'}}>
+              <Text style={{fontSize:20,color:'blue'}} onPress={() => setPrioridad('3')}>Baja</Text>
+              <RadioButton
+                value="3"
+                status={ prioridad === '3' ? 'checked' : 'unchecked' }
+                onPress={() => setCobertura('3')}
+              />
+            </View>
 
-          <View style={{flexDirection:'row',alignItems:'center',marginEnd:10}}>
-            <Text style={{fontSize:20,color:'blue'}} onPress={() => setPrioridad('2')}>Media</Text>
-            <RadioButton
-              value="2"
-              status={ prioridad === '2' ? 'checked' : 'unchecked' }
-              onPress={() => setCobertura('2')}
-            />
-          </View>
+          </View>  
 
-          <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Text style={{fontSize:20,color:'blue'}} onPress={() => setPrioridad('3')}>Baja</Text>
-            <RadioButton
-              value="3"
-              status={ prioridad === '3' ? 'checked' : 'unchecked' }
-              onPress={() => setCobertura('3')}
-            />
-          </View>
+        </View>
 
-        </View>  
+        <View style={{alignItems:'flex-end',marginTop:10}}>
+          <IconButton
+            icon="arrow-right"
+            iconColor={'blue'}
+            size={50}
+            onPress={() => setNextPage(true)}
+          />
+        </View>
 
-      </View>
-
-      <View style={{alignItems:'flex-end',marginTop:10}}>
-        <IconButton
-          icon="arrow-right"
-          iconColor={'blue'}
-          size={50}
-          onPress={() => setNextPage(true)}
-        />
-      </View>
+      </ScrollView>
 
       {/*  */}
 
@@ -529,9 +551,10 @@ const [nextPage,setNextPage] = useState(false);
               mode="elevated"
               buttonColor="#BF1616"          
               textColor="white"
-              onPress={{
-
-              }}
+              onPress={
+                test
+              
+              }
 
             >Reportar</Button>
           </View>
@@ -631,12 +654,14 @@ const [nextPage,setNextPage] = useState(false);
         contentContainerStyle={containerStyleMapa}
       > 
 
+        <Text style={{alignSelf:'center',fontSize:18,color:'blue'}}>Mantenga presionado el marcador y arrastre dentro de la zona marcada.</Text>
+
         {currentLocation != null ?
         <MapView 
           
           style={{                
             width:'100%',
-            height:'100%'
+            height:'98%'
           }}          
 
           // minZoomLevel={15}
@@ -692,6 +717,14 @@ const [nextPage,setNextPage] = useState(false);
     </PaperProvider>
     
   );
+
+  function test(){    
+    var pt = point([currentLocation.latitude, currentLocation.longitude]);
+    var po = polygon([polygonCoordenates])
+    setDentroZona(booleanPointInPolygon(pt, po));
+    console.log(booleanPointInPolygon(pt, po)); 
+  }
+
 };
 
 export default ReportarScreen;

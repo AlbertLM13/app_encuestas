@@ -173,7 +173,7 @@ function MyStack(){
                 component={ReportarScreen}
                 
                 options={{
-                    headerBackTitle:"Regresar",
+                    headerBackTitle:"Cancelar",
                     title:'Reportar un problema'    
                 }}
                 
