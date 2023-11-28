@@ -1,5 +1,5 @@
 import React ,{useEffect,useContext} from "react";
-import { View, Text, StyleSheet,TextInput ,Platform,Image,ScrollView,FlatList} from "react-native";
+import { View, Text, StyleSheet,TextInput ,Platform,Image,ScrollView,FlatList,Alert} from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { RadioButton ,Button ,Banner ,FAB, Portal,Modal, PaperProvider,IconButton, MD3Colors  } from 'react-native-paper';
@@ -11,16 +11,26 @@ import axios from "axios";
 import { BASE_URL } from "../config";
 import { AuthContext } from "../context/AuthContext";
 import MapView, {Callout, Marker,Polygon } from 'react-native-maps';
-// import Geolocation from '@react-native-community/geolocation';
 import * as Location from 'expo-get-location'
-// import { LocationObject } from "expo-get-location";
-// import { useNavigation } from "@react-navigation/core";
-// import turf from '@turf/boolean-point-in-polygon';
-import turf,{point,polygon,booleanPointInPolygon} from '@turf/turf'
-// import point from '@turf/boolean-point-in-polygon'
-
+import turf,{point,polygon,booleanPointInPolygon} from '@turf/turf';
+import * as FileSystem from "expo-file-system";
+import { useNavigation } from "@react-navigation/native";
 
 const ReportarScreen = () => {
+
+
+  const navigation  =useNavigation();
+  const createTwoButtonAlert = () =>
+  Alert.alert('Exito', 'Problema enviado para su analisis', [
+    {
+      // text: 'Cancel',
+      // onPress: () => console.log('Cancel Pressed'),
+      // style: 'cancel',
+    },
+    {text: 'OK', onPress:() => navigation.navigate('HomeScreen')},
+  ]);
+
+const[descripcion,setDescripcion] = useState(null);
 
 // Carga datos
 const{userInfo} =  useContext(AuthContext);  
@@ -119,14 +129,6 @@ const GetLocation = async () => {
     longitudeDelta: 0.005,
   });
 
-  // let { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     console.log('Permission to access location was denied');
-  //     return;
-  //   }
-  //   let location =  LocationObject = await Location.getCurrentPositionAsync({});
-  //   console.log(location.coords.latitude);
-  //   console.log(location.coords.longitude);
 }
 
 // 
@@ -175,13 +177,11 @@ const [image, setImage] = useState(null);
 const pickImage = async () => {
   // No permissions request is necessary for launching the image library
   let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     // aspect: [4, 3],
-    quality: 1,
-  });
-
-  console.log(result);
+    quality: 2,
+  });  
 
   if (!result.canceled) {
     setImage(result.assets[0].uri);
@@ -196,14 +196,16 @@ const [camera, setCamera] = useState(null);
 const [type, setType] = useState(Camera.Constants.Type.back);
 useEffect(() => {
   (async () => {
-    const cameraStatus = await Camera.requestCameraPermissionsAsync();
+    const cameraStatus = await Camera.requestCameraPermissionsAsync();    
     setHasCameraPermission(cameraStatus.status === 'granted');
   })();
 }, []);
 
 const takePicture = async () => {
   if(camera){
-      const data = await camera.takePictureAsync(null)
+      const data = await camera.takePictureAsync({
+        quality:0.5
+      })
       setImage(data.uri);
       hideModal();
   }
@@ -331,7 +333,7 @@ const [nextPage,setNextPage] = useState(false);
 
       {/* DATE */}    
       
-      <ScrollView>
+      <ScrollView style={{zIndex:-20}}>
       
         <View
           style={{alignItems:'center',zIndex:-2,marginTop:10,marginBottom:10,marginStart:20,marginEnd:20}}        
@@ -530,7 +532,8 @@ const [nextPage,setNextPage] = useState(false);
             style={styles.input}
             placeholder="Descripción"
             multiline={true}
-            numberOfLines={4}        
+            numberOfLines={4} 
+            onChangeText={text=>setDescripcion(text)}       
           />      
 
           <View 
@@ -552,8 +555,21 @@ const [nextPage,setNextPage] = useState(false);
               buttonColor="#BF1616"          
               textColor="white"
               onPress={
-                test
-              
+                ()=>{
+                  test();
+                  guardarProblema(
+                      value3  // Colonia
+                      ,value  // Categoria
+                      ,value2 // Problema  
+                      ,date.toLocaleString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'}) // fecha   
+                      ,cobertura
+                      ,prioridad
+                      ,image
+                      ,currentLocation.latitude
+                      ,currentLocation.longitude
+                      ,descripcion
+                    );            
+                }
               }
 
             >Reportar</Button>
@@ -586,7 +602,8 @@ const [nextPage,setNextPage] = useState(false);
         <Camera 
           ref={ref => setCamera(ref)}            
           type={type}                              
-          style={StyleSheet.absoluteFillObject}                                     
+          style={StyleSheet.absoluteFillObject}    
+                                  
         />
         
         <View style={{flexDirection:'row'}}>
@@ -721,10 +738,106 @@ const [nextPage,setNextPage] = useState(false);
   function test(){    
     var pt = point([currentLocation.latitude, currentLocation.longitude]);
     var po = polygon([polygonCoordenates])
-    setDentroZona(booleanPointInPolygon(pt, po));
-    console.log(booleanPointInPolygon(pt, po)); 
+    setDentroZona(booleanPointInPolygon(pt, po));    
   }
 
+  async function guardarProblema(
+    colonia,
+    categoria,
+    problema,
+    fecha,
+    cobertura,
+    prioridad,
+    imagen,
+    latitud,
+    longitud,
+    descripcion
+  ){
+    
+
+  //  IMAGEN
+
+  if (!imagen) alert("Seleccione una imagen");
+  const canUpload = await checkFileSize(imagen);
+
+  if (!canUpload) {
+    alert("Seleccione una imagen menor a  3MB");
+    setIsLoading(false);
+    setImage(undefined);
+    return;
+  }
+
+  if(!dentroZona){
+    alert("La ubicación esta fuera de la zona marcada.");
+    setIsLoading(false);
+    return;
+  };
+
+  const uri =
+      // Platform.OS === "android"
+      //   ? imagen
+      //   : 
+        imagen.replace("file://", "");
+
+    const filename = imagen.split("/").pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const ext = match?.[1];
+    const type = match ? `image/${match[1]}` : `image`;
+    const formData = new FormData();    
+
+    setIsLoading(true);
+
+    formData.append("image", {
+      uri,
+      name: `image.${ext}`,
+      type,
+    });
+
+    formData.append('colonia' ,colonia);
+    formData.append('categoria' ,categoria);
+    formData.append('problema' ,problema);
+    formData.append('fecha' ,fecha);
+    formData.append('cobertura' ,cobertura);
+    formData.append('prioridad' ,prioridad);
+    formData.append('latitud' ,latitud);
+    formData.append('longitud' ,longitud);
+    formData.append('descripcion' ,descripcion);
+
+
+  // IMAGEN
+
+
+    axios.post(`${BASE_URL}/reportes/GuardarProblema`,
+      formData
+    ,{headers:{      
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${userInfo.token}`       
+    }}).then(res =>{                
+        
+        console.log(res.data);
+        createTwoButtonAlert();        
+
+        setIsLoading(false);    
+    }).catch(e =>{
+        console.log(`Error ${e}`);      
+        setIsLoading(false);
+    });
+  }
+  
+  
+};
+
+
+
+
+const checkFileSize = async (
+  fileURI,
+  maxSize = 3
+) => {
+  const fileInfo = await FileSystem.getInfoAsync(fileURI);
+  if (!fileInfo.size) return false;
+  const sizeInMb = fileInfo.size / 1024 / 1024;
+  return sizeInMb < maxSize;
 };
 
 export default ReportarScreen;

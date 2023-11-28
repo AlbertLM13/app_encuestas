@@ -34,9 +34,9 @@ const CardReporte = ({
 }) => {
     
   const{userInfo} =  useContext(AuthContext);    
-  const  iconTitle = ["null","highway", "lightbulb","highway"];  
+  const  iconTitle = ["null","highway", "lightbulb","highway","bus","pine-tree","trash-can"];  
   const  iconColor = ["#B3E5FF","#B3E5FF", "#FFDD99","#C5B8A2","#E3E3E3","#C6F198","#E3E3E3"];  
-  const iconColor2 = ["#B3E5FF","#7669E3", "#CB8B0D","#6E5F48","#666666","#769852","#9E9E9E"];  
+  const iconColor2 = ["#B3E5FF","#7669E3", "#CB8B0D","#6E5F48","#666666","#769852","#666666"];  
   
   return (
     
