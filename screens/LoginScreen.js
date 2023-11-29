@@ -13,7 +13,7 @@ const LoginScreen =({navigation}) =>{
     // const {userInfo} =  useContext(AuthContext);
     const[email,setEmail] = useState(null); 
     const[password,setPassword] = useState(null);
-    const{isLoading,login,userInfo,createObjectUser} =  useContext(AuthContext);
+    const{isLoading,login,userInfo,checkLogin} =  useContext(AuthContext);
 
     return (
         

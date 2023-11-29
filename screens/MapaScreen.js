@@ -9,6 +9,7 @@ import { BASE_URL } from "../config";
 import { BASE_URL_IMAGE } from "../config";
 import { Modal, Portal, Button, PaperProvider } from 'react-native-paper';
 import Spinner from "react-native-loading-spinner-overlay";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [origen,setOrigen] = React.useState({
@@ -40,8 +41,33 @@ const containerStyle = {backgroundColor: 'white', padding: 20};
 // MODAL
 
 useEffect(()=>{
-  GetMarkers();
-  GetCoordenates();
+
+  setIsLoading(true);
+  AsyncStorage.getItem('marcadores').then((value) => {
+    if (value) {            
+        var obj = JSON.parse(value);    
+        setMarkers(obj);                
+        setIsLoading(false);                  
+    }else{
+      setIsLoading(false);                  
+      GetMarkers();      
+    }
+  });
+
+  setIsLoading(true);
+  AsyncStorage.getItem('coordenadas').then((value) => {
+    if (value) {            
+        var obj = JSON.parse(value);    
+        seCoordenates(obj);                
+        setIsLoading(false);                  
+    }else{
+      setIsLoading(false);                  
+      GetCoordenates();      
+    }
+  });
+
+  
+
 },[]);
 
 async function GetMarkers(){
@@ -52,7 +78,8 @@ async function GetMarkers(){
     'Authorization': `Bearer ${userInfo.token}` 
   }}).then(res =>{                
       setIsLoading(false);  
-      setMarkers(res.data);                                           
+      setMarkers(res.data);  
+      AsyncStorage.setItem('marcadores',JSON.stringify(res.data));                                            
   }).catch(e =>{
       console.log(`Error ${e}`);
       setIsLoading(false);
@@ -67,7 +94,8 @@ async function GetCoordenates(){
     'Authorization': `Bearer ${userInfo.token}` 
   }}).then(res =>{                
       setIsLoading(false);   
-      seCoordenates(res.data);                
+      seCoordenates(res.data);        
+      AsyncStorage.setItem('coordenadas',JSON.stringify(res.data));                                                    
   }).catch(e =>{
       console.log(`Error ${e}`);
       setIsLoading(false);

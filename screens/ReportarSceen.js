@@ -15,6 +15,7 @@ import * as Location from 'expo-get-location'
 import turf,{point,polygon,booleanPointInPolygon} from '@turf/turf';
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ReportarScreen = () => {
 
@@ -37,8 +38,21 @@ const{userInfo} =  useContext(AuthContext);
 const [isLoading,setIsLoading] = useState(false);
 
 useEffect(()=>{
+
+  setIsLoading(true);
+  AsyncStorage.getItem('coordenadas').then((value) => {
+    if (value) {            
+        var obj = JSON.parse(value);    
+        seCoordenates(obj);                
+        setIsLoading(false);                  
+    }else{
+      setIsLoading(false);                  
+      GetCoordenates();      
+    }
+  });
+
   GetColoniasCategorias();
-  GetCoordenates();
+  // GetCoordenates();
   GetLocation();
 },[]);
 
@@ -85,7 +99,7 @@ async function GetCoordenates(){
       setIsLoading(false);   
       seCoordenates(res.data);                
       convertPolygon(res.data);
-
+      AsyncStorage.setItem('coordenadas',JSON.stringify(res.data)); 
   }).catch(e =>{
       console.log(`Error ${e}`);
       setIsLoading(false);

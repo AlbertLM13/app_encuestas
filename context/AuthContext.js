@@ -29,6 +29,7 @@ export const AuthProvider = ({children}) =>{
     };
 
     const login = (email,password) =>{
+               
         setIsLoading(true);        
         const token = null;
         setUserInfo({token});
@@ -43,12 +44,26 @@ export const AuthProvider = ({children}) =>{
         }).catch(e =>{
             console.log(`login error ${e}`);
             setIsLoading(false);
-        });
+        });         
          
     };
 
+    // const checkLogin=()=>{
+    //     AsyncStorage.getItem('userInfo').then((value) => {
+    //         if (value) {            
+    //             var obj = JSON.parse(value);    
+    //             setUserInfo(obj); 
+    //             console.log(obj);
+    //             setIsLoading(false);                 
+    //         }else{
+                
+    //         }
+    //     });
+    // }
+
     const logout = ()=>{
         setUserInfo({});
+        AsyncStorage.deleteItem('userInfo');
     };        
 
     return (
@@ -58,7 +73,9 @@ export const AuthProvider = ({children}) =>{
                 userInfo,                
                 register,
                 login,
-                logout                
+                logout,
+                // checkLogin,  
+                setUserInfo,              
             }} 
         >
             {children}

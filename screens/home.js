@@ -9,7 +9,7 @@ import axios from "axios";
 import { BASE_URL } from "../config";
 import Spinner from "react-native-loading-spinner-overlay";
 import MapView, {Callout, Marker,Polygon } from 'react-native-maps';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // import {Dialog} from '@react-native-material/core';
 
@@ -30,23 +30,43 @@ const HomeScreen = () => {
   const containerStyle = {backgroundColor: 'white', padding: 20};
 // MODAL
 
+  const[isFetching,setIsFetching] = useState(false);
 
-  useEffect(()=>{
+  function onRefresh(){
+    setIsFetching(true);
     GetReportes();
+  }
+
+  useEffect(()=>{    
+ 
+    AsyncStorage.getItem('reportes').then((value) => {
+      if (value) {            
+        var obj = JSON.parse(value);    
+        setReportes(obj);           
+        setIsLoading(false);                 
+      }else{
+        GetReportes();
+      }
+    });
+
+    
   },[]);
 
-  async function GetReportes(){
+  async function GetReportes(){            
     setIsLoading(true);
     axios.post(`${BASE_URL}/reportes/CargarRerportes`,{
-         
+               
     },{headers:{
       'Authorization': `Bearer ${userInfo.token}` 
     }}).then(res =>{                
         setIsLoading(false);  
-        setReportes(res.data);                                      
+        setReportes(res.data); 
+        AsyncStorage.setItem('reportes',JSON.stringify(res.data));    
+        setIsFetching(false);       
     }).catch(e =>{
         console.log(`Error ${e}`);
         setIsLoading(false);
+        setIsFetching(false);       
     });
   } 
 
@@ -78,6 +98,8 @@ const HomeScreen = () => {
                 setSelectedId={setSelectedId}             
               />            
             )}
+            onRefresh={onRefresh}
+            refreshing={isFetching}
           />                    
                       
           

@@ -11,8 +11,6 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext } from '../context/AuthContext';
 import { MaterialCommunityIcons,Entypo ,Ionicons,FontAwesome  } from '@expo/vector-icons'; 
-
-
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import Drawer1 from "../screens/DrawerScreen";
@@ -22,7 +20,8 @@ import HomeScreen from "../screens/home";
 import Mapa from '../screens/MapaScreen';
 import Perfil from '../screens/PerfilScreen';
 import ReportarScreen from '../screens/ReportarSceen';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from 'react';
 
 
 const HomeStackMain = createNativeStackNavigator();
@@ -184,7 +183,22 @@ function MyStack(){
 
 export default function NavigationApp(){
 
-    const {userInfo} =  useContext(AuthContext); 
+    const {userInfo,setUserInfo} =  useContext(AuthContext); 
+    const[firstTime,setFirstTime] = useState(false);
+    // userInfo.token ? null:checkLogin();
+
+    if(!firstTime){
+
+        AsyncStorage.getItem('userInfo').then((value) => {
+            if (value) {            
+                var obj = JSON.parse(value);    
+                setUserInfo(obj);                 
+                setFirstTime(true);
+            }else{
+                firstTime(true);
+            }
+        });
+    }
 
     return(
         <NavigationContainer  >        
