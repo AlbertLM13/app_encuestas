@@ -2,7 +2,7 @@ import React ,{useEffect,useContext} from "react";
 import { View, Text, StyleSheet,TextInput ,Platform,Image,ScrollView,FlatList,Alert} from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { RadioButton ,Button ,Banner ,FAB, Portal,Modal, PaperProvider,IconButton, MD3Colors  } from 'react-native-paper';
+import { RadioButton ,Button ,HelperText ,FAB, Portal,Modal, PaperProvider,IconButton, MD3Colors  } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, CameraType } from 'expo-camera';
@@ -169,8 +169,8 @@ const showDatepicker = () => {
 };
 
 // DATE
-const [cobertura, setCobertura] = useState(false);
-const [prioridad, setPrioridad] = useState(false);
+const [cobertura, setCobertura] = useState(null);
+const [prioridad, setPrioridad] = useState(null);
 
 
 const [image, setImage] = useState(null);
@@ -238,6 +238,16 @@ DropDownPicker.setLanguage("ES");
 
 const [nextPage,setNextPage] = useState(false);
 
+// VAlidacion
+
+const[saveButtonPressed,setSaveButtonPressed] = useState(false);
+
+// const hasErrors = () => {
+//   return value3 === null;
+// };
+
+// Validacion
+
   return (    
 
     
@@ -251,7 +261,7 @@ const [nextPage,setNextPage] = useState(false);
 
       <View style={{flexDirection:'column',alignItems:'center'}}>                                       
 
-          <View style={{alignItems:'center',marginTop:10,marginBottom:10,zIndex:2}}>
+          <View style={{alignItems:'center',marginTop:10,marginBottom:0,zIndex:2}}>
             <Text style={{fontSize:20}}>Colonia:</Text>
           </View>
 
@@ -275,9 +285,12 @@ const [nextPage,setNextPage] = useState(false);
             searchable={true}
             maxHeight={350}
             zIndex={1999}
-          />                
+          />             
+          <HelperText style={{fontSize:15}} type="error" visible={value3 === null && saveButtonPressed}>
+            Seleccione la colonia
+          </HelperText>   
 
-          <View style={{alignItems:'center',marginTop:10,marginBottom:10,zIndex:-1}}>
+          <View style={{alignItems:'center',marginTop:0,marginBottom:0,zIndex:-1}}>
             <Text style={{fontSize:20}}>Categoria:</Text>
           </View>
 
@@ -304,7 +317,11 @@ const [nextPage,setNextPage] = useState(false);
 
           />
 
-          <View style={{alignItems:'center',marginTop:10,marginBottom:10}}>
+          <HelperText style={{fontSize:15}} type="error" visible={value === null && saveButtonPressed}>
+            Seleccione la categoria
+          </HelperText> 
+
+          <View style={{alignItems:'center',marginTop:0,marginBottom:10}}>
             <Text style={{fontSize:20}}>Problema:</Text>
           </View>
 
@@ -327,7 +344,10 @@ const [nextPage,setNextPage] = useState(false);
             setItems={setItems2}
             autoScroll={true}
             zIndex={888}
-          />          
+          />     
+          <HelperText style={{fontSize:15}} type="error" visible={value2 === null && saveButtonPressed}>
+            Seleccione el problema
+          </HelperText>      
 
       </View>
 
@@ -336,7 +356,7 @@ const [nextPage,setNextPage] = useState(false);
       <ScrollView style={{zIndex:-20}}>
       
         <View
-          style={{alignItems:'center',zIndex:-2,marginTop:10,marginBottom:10,marginStart:20,marginEnd:20}}        
+          style={{alignItems:'center',zIndex:-2,marginTop:10,marginBottom:0,marginStart:20,marginEnd:20}}        
         >
           <Text style={{fontSize:20,marginBottom:5}}>Fecha inicio:</Text>
           <Button 
@@ -378,7 +398,7 @@ const [nextPage,setNextPage] = useState(false);
           style={{
             alignItems:'center',
             marginTop:10,
-            marginBottom:10,      
+            marginBottom:0,      
             zIndex:-2    
           }}
         >
@@ -415,11 +435,16 @@ const [nextPage,setNextPage] = useState(false);
               />
             </View>
 
+            
+
           </View>  
+          <HelperText style={{fontSize:15}} type="error" visible={cobertura === null && saveButtonPressed}>
+            Seleccione la cobertura
+          </HelperText>
 
         </View>
         
-        <View style={{alignItems:'center',marginBottom:10,marginTop:10}}>
+        <View style={{alignItems:'center',marginBottom:0,marginTop:10}}>
           <Text style={{fontSize:20}}>Prioridad:</Text>
 
           <View 
@@ -460,8 +485,12 @@ const [nextPage,setNextPage] = useState(false);
                 onPress={() => setCobertura('3')}
               />
             </View>
-
+            
           </View>  
+
+          <HelperText style={{fontSize:15}} type="error" visible={prioridad === null && saveButtonPressed}>
+            Seleccione la prioridad
+          </HelperText>
 
         </View>
 
@@ -469,7 +498,7 @@ const [nextPage,setNextPage] = useState(false);
           <IconButton
             icon="arrow-right"
             iconColor={'blue'}
-            size={50}
+            size={40}
             onPress={() => setNextPage(true)}
           />
         </View>
@@ -535,6 +564,9 @@ const [nextPage,setNextPage] = useState(false);
             numberOfLines={4} 
             onChangeText={text=>setDescripcion(text)}       
           />      
+          <HelperText style={{fontSize:15}} type="error" visible={descripcion === null && saveButtonPressed}>
+            Seleccione la descripción
+          </HelperText>
 
           <View 
             style={{
@@ -546,7 +578,7 @@ const [nextPage,setNextPage] = useState(false);
             
             <Button
               style={{
-                marginTop:20,
+                marginTop:5,
                 marginBottom:0,
                 width:'50%',
                 
@@ -579,7 +611,7 @@ const [nextPage,setNextPage] = useState(false);
             <IconButton
               icon="arrow-left"
               iconColor={'blue'}
-              size={50}
+              size={40}
               onPress={() => setNextPage(false)}
             />
           </View>
@@ -754,74 +786,82 @@ const [nextPage,setNextPage] = useState(false);
     descripcion
   ){
     
+    setSaveButtonPressed(true);
 
+    if(colonia != null && categoria != null && problema != null && cobertura != null && prioridad != null && imagen != null && latitud != null && longitud != null && descripcion != null && descripcion != ''){
+    
   //  IMAGEN
 
-  if (!imagen) alert("Seleccione una imagen");
-  const canUpload = await checkFileSize(imagen);
+    if (!imagen) alert("Seleccione una imagen");
+    const canUpload = await checkFileSize(imagen);
 
-  if (!canUpload) {
-    alert("Seleccione una imagen menor a  3MB");
-    setIsLoading(false);
-    setImage(undefined);
-    return;
-  }
+    if (!canUpload) {
+      alert("Seleccione una imagen menor a  3MB");
+      setIsLoading(false);
+      setImage(undefined);
+      return;
+    }
 
-  if(!dentroZona){
-    alert("La ubicación esta fuera de la zona marcada.");
-    setIsLoading(false);
-    return;
-  };
+    if(!dentroZona){
+      alert("La ubicación esta fuera de la zona marcada.");
+      setIsLoading(false);
+      return;
+    };
 
-  const uri =
-      // Platform.OS === "android"
-      //   ? imagen
-      //   : 
-        imagen.replace("file://", "");
+    const uri =
+        // Platform.OS === "android"
+        //   ? imagen
+        //   : 
+          imagen.replace("file://", "");
 
-    const filename = imagen.split("/").pop();
-    const match = /\.(\w+)$/.exec(filename);
-    const ext = match?.[1];
-    const type = match ? `image/${match[1]}` : `image`;
-    const formData = new FormData();    
+      const filename = imagen.split("/").pop();
+      const match = /\.(\w+)$/.exec(filename);
+      const ext = match?.[1];
+      const type = match ? `image/${match[1]}` : `image`;
+      const formData = new FormData();    
 
-    setIsLoading(true);
+      setIsLoading(true);
 
-    formData.append("image", {
-      uri,
-      name: `image.${ext}`,
-      type,
-    });
+      formData.append("image", {
+        uri,
+        name: `image.${ext}`,
+        type,
+      });
 
-    formData.append('colonia' ,colonia);
-    formData.append('categoria' ,categoria);
-    formData.append('problema' ,problema);
-    formData.append('fecha' ,fecha);
-    formData.append('cobertura' ,cobertura);
-    formData.append('prioridad' ,prioridad);
-    formData.append('latitud' ,latitud);
-    formData.append('longitud' ,longitud);
-    formData.append('descripcion' ,descripcion);
-
-
-  // IMAGEN
+      formData.append('colonia' ,colonia);
+      formData.append('categoria' ,categoria);
+      formData.append('problema' ,problema);
+      formData.append('fecha' ,fecha);
+      formData.append('cobertura' ,cobertura);
+      formData.append('prioridad' ,prioridad);
+      formData.append('latitud' ,latitud);
+      formData.append('longitud' ,longitud);
+      formData.append('descripcion' ,descripcion);
 
 
-    axios.post(`${BASE_URL}/reportes/GuardarProblema`,
-      formData
-    ,{headers:{      
-      'Content-Type': 'multipart/form-data',
-      'Authorization': `Bearer ${userInfo.token}`       
-    }}).then(res =>{                
-        
-        console.log(res.data);
-        createTwoButtonAlert();        
+    // IMAGEN
 
-        setIsLoading(false);    
-    }).catch(e =>{
-        console.log(`Error ${e}`);      
-        setIsLoading(false);
-    });
+
+      axios.post(`${BASE_URL}/reportes/GuardarProblema`,
+        formData
+      ,{headers:{      
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${userInfo.token}`       
+      }}).then(res =>{                
+          
+          console.log(res.data);
+          createTwoButtonAlert();        
+
+          setIsLoading(false);    
+      }).catch(e =>{
+          console.log(`Error ${e}`);      
+          setIsLoading(false);
+      });
+
+    }else{
+      return alert("Hay campos sin llenar.");
+    }
+
   }
   
   
