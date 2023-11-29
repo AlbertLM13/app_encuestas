@@ -43,7 +43,8 @@ useEffect(()=>{
   AsyncStorage.getItem('coordenadas').then((value) => {
     if (value) {            
         var obj = JSON.parse(value);    
-        seCoordenates(obj);                
+        seCoordenates(obj);
+        convertPolygon(obj);                
         setIsLoading(false);                  
     }else{
       setIsLoading(false);                  
@@ -51,8 +52,7 @@ useEffect(()=>{
     }
   });
 
-  GetColoniasCategorias();
-  // GetCoordenates();
+  GetColoniasCategorias();  
   GetLocation();
 },[]);
 
