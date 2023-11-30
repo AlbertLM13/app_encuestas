@@ -1,18 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const StackScreen = () => {
   return (
-    <View>
-      <Text
-        style={{
-          fontSize: 30,
-          textAlign: "center",
-          marginTop: "20%",
-        }}
-      >
-        Stack Screen
-      </Text>
+    <View style={{flex:1}}>       
+
+        <Text
+          style={{
+            fontSize: 30,
+            textAlign: "center",
+            marginTop: "20%",
+          }}
+        >
+          Stack Screen
+        </Text>
+
     </View>
   );
 };

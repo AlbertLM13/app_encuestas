@@ -48,22 +48,9 @@ export const AuthProvider = ({children}) =>{
          
     };
 
-    // const checkLogin=()=>{
-    //     AsyncStorage.getItem('userInfo').then((value) => {
-    //         if (value) {            
-    //             var obj = JSON.parse(value);    
-    //             setUserInfo(obj); 
-    //             console.log(obj);
-    //             setIsLoading(false);                 
-    //         }else{
-                
-    //         }
-    //     });
-    // }
-
     const logout = ()=>{
         setUserInfo({});
-        AsyncStorage.deleteItem('userInfo');
+        AsyncStorage.removeItem('userInfo');
     };        
 
     return (
