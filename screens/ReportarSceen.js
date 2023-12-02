@@ -125,6 +125,8 @@ const[polygonCoordenates,setPolygonCoordenates] = useState([]);
 const[currentLocation, setCurrentLocation] = useState(null);
 const[initialRegion, setInitialRegion] = useState(null);
 
+const[changeLocation,setChangeLocation] = useState(false);
+
 const GetLocation = async () => {
 
   let { status } = await Location.requestForegroundPermissionsAsync();
@@ -134,8 +136,11 @@ const GetLocation = async () => {
   }
 
   let location = await Location.getCurrentPositionAsync({});
-  setCurrentLocation(location.coords);
 
+  if(!changeLocation){
+    setCurrentLocation(location.coords);  
+  }
+  
   setInitialRegion({
     latitude: location.coords.latitude,
     longitude: location.coords.longitude,
@@ -746,8 +751,13 @@ const[saveButtonPressed,setSaveButtonPressed] = useState(false);
             coordinate={{
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
-            }}    
-            onDragEnd={(direction)=>setCurrentLocation(direction.nativeEvent.coordinate)}             
+            }}                
+            onDragEnd={  (direction)=>{
+                  setCurrentLocation(direction.nativeEvent.coordinate);
+                  setChangeLocation(true);
+                  console.log(currentLocation);
+                }
+              }             
           >
 
           <Image             
