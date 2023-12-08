@@ -107,7 +107,7 @@ return (
     <View style={styles.container}>
 
       <SafeAreaView  style={{backgroundColor:"#97C18D"}}>       
-        <View style={{justifyContent:'center',flexDirection:'row'}}>
+        <View style={{justifyContent:'center',flexDirection:'row',height: Platform.OS == 'ios'? '3%' :'auto'}}>
           <Image 
               source={require('../assets/Logo.png')}
               style={{width:100,height:50}}

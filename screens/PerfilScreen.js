@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet,Image } from "react-native";
+import { View, Text, StyleSheet,Image ,Platform} from "react-native";
 import { 
   createDrawerNavigator, 
   DrawerContentScrollView,
@@ -10,7 +10,9 @@ import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import StackScreen from "./StackScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Header } from "@react-navigation/stack";
+
+
+import MisDatos from "./MisDatos";
 
 
 const DrawerNavigate = createDrawerNavigator();
@@ -20,9 +22,14 @@ function CustomDrawerContent(props) {
   const {logout} =  useContext(AuthContext); 
 
   return (
-    <DrawerContentScrollView {...props}>
+    <DrawerContentScrollView {...props} >
       <DrawerItemList {...props} />
-      <DrawerItem label="Cerrar Sesión" onPress={() => logout() } />
+      <DrawerItem 
+        label="Cerrar Sesión" 
+        inactiveTintColor={'red'}
+        onPress={() => logout() }     
+        drawerPosition={'bottom'}       
+      />        
     </DrawerContentScrollView>
   );
 }
@@ -32,31 +39,31 @@ function MyDrawer(){
     return (  
       <>
       <SafeAreaView  style={{backgroundColor:"orange"}}>       
-          <View style={{justifyContent:'center',flexDirection:'row'}}>
-            <Image 
-                source={require('../assets/Logo.png')}
-                style={{width:100,height:50}}
-            />   
-          </View>
-          
-        </SafeAreaView>
-
-      <DrawerNavigate.Navigator           
-
-        screenOptions={{
-          title:'',
+        <View style={{justifyContent:'center',flexDirection:'row',height: Platform.OS == 'ios'? '3%' :'auto'}}>
+          <Image 
+              source={require('../assets/Logo.png')}
+              style={{width:100,height:50}}
+          />   
+        </View>        
+      </SafeAreaView>
+      
+      <DrawerNavigate.Navigator                           
+        height={200}
+        screenOptions={{          
           drawerPosition:'left',
           drawerActiveTintColor:'orange',              
-        }}       
-        tabBarActiveTintColor='black'        
+          drawerInactiveTintColor:'black',          
+          drawerType:'front',          
+          // headerTitle:'sd'
+        }}         
         
-        drawerContent={ props => <CustomDrawerContent  {...props}/>}
-
+        drawerContent={ props => <CustomDrawerContent  {...props} />  }
+        
       >   
           <DrawerNavigate.Screen 
-              name="StackScreen" component={StackScreen} 
+              name="MisDatos" component={MisDatos} 
               options={{
-                  title:'StackScreen',
+                  title:'Mis datos',
                   
               }}        
           />

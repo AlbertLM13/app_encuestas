@@ -76,7 +76,7 @@ const HomeScreen = () => {
       <View style={{flex:1}}>
       
         <SafeAreaView  style={{backgroundColor:"#C699D8"}}>       
-          <View style={{justifyContent:'center',flexDirection:'row'}}>
+          <View style={{justifyContent:'center',flexDirection:'row',height: Platform.OS == 'ios'? '3%' :'auto'}}>
             <Image 
                 source={require('../assets/Logo.png')}
                 style={{width:100,height:50}}
