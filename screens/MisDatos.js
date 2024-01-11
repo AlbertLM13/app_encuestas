@@ -13,6 +13,7 @@ import { BASE_URL_IMAGE_PERFIL } from "../config";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
 import DropDownPicker from "react-native-dropdown-picker";
+import * as ImagePicker from 'expo-image-picker';
 
 
 const MisDatos = () => {
@@ -61,8 +62,8 @@ const MisDatos = () => {
   const[misDatos,setMisDatos] = useState([]);
 
   useEffect(()=>{         
-
-    setIsLoading(true);
+    
+    setIsLoading(true);    
     AsyncStorage.getItem('MisDatos').then((value) => {
       if (value) {            
         var obj = JSON.parse(value);    
@@ -102,6 +103,7 @@ const MisDatos = () => {
   async function GetEstados(){
 
     setIsLoading(true);
+    
     AsyncStorage.getItem('Estados').then((value) => {
       if (value) {            
         var obj = JSON.parse(value);            
@@ -138,13 +140,43 @@ const MisDatos = () => {
     }}).then(res =>{                
         setIsLoading(false);  
         setColonias(res.data);                    
-        AsyncStorage.setItem('Estados',JSON.stringify(res.data));             
+        // AsyncStorage.setItem('Estados',JSON.stringify(res.data));             
     }).catch(e =>{
         console.log(`Error ${e}`);
         setIsLoading(false);
     });
                     
   } 
+
+  async function GuardarDatos(){
+
+    fecha = date.toLocaleString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'});
+
+    setIsLoading(true);
+    axios.post(`${BASE_URL}/reportes/GuardarDatosUsuario`,{
+        'curp':curp,
+        'cp':cp,
+        'nombre':nombre,
+        'apellidoP':apellidoP,
+        'apellidoM':apellidoM,
+        'fechaNacimiento':fecha,
+        'estado':estado,
+        'colonia':colonia,
+        'calleP':calleP,
+        'entreC1':entreC1,
+        'entreC2':entreC2            
+    },{headers:{
+      'Authorization': `Bearer ${userInfo.token}` 
+    }}).then(res =>{         
+        console.log(res);       
+        setIsLoading(false);  
+        GetMisDatos();
+    }).catch(e =>{
+        console.log(`Error ${e}`);
+        setIsLoading(false);
+    });
+
+  }
 
   function setValues(data){
     
@@ -185,6 +217,59 @@ const MisDatos = () => {
     showMode('date');
   };
 
+  const [onUpdateImage, setOnUpdateImage] = useState(Math.random())
+  const [image, setImage] = useState(null);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      // aspect: [4, 3],
+      quality: 1,
+    });  
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      GuardarPrfil(image);
+    }
+  };
+
+  async function GuardarPrfil(imagen){    
+
+    const uri =
+        // Platform.OS === "android"
+        //   ? imagen
+        //   : 
+        imagen.replace("file://", "");
+
+      const filename = imagen.split("/").pop();
+      const match = /\.(\w+)$/.exec(filename);
+      const ext = match?.[1];
+      const type = match ? `image/${match[1]}` : `image`;
+      const formData = new FormData();          
+
+      formData.append("image", {
+        uri,
+        name: `image.${ext}`,
+        type,
+      });
+
+    setIsLoading(true);
+    axios.post(`${BASE_URL}/reportes/GuardarImagenPerfil`,
+    formData
+    ,{headers:{      
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${userInfo.token}`       
+    }}).then(res =>{         
+        setOnUpdateImage(Math.random())  
+        setIsLoading(false);          
+    }).catch(e =>{
+        console.log(`Error ${e}`);
+        setIsLoading(false);
+    });
+
+  }
+
   function componentWillMount(){
     
     Image.getSize(BASE_URL_IMAGE_PERFIL+userInfo.userId+'/perfil.jpg', (width, height) => {
@@ -211,13 +296,15 @@ const MisDatos = () => {
           alignSelf:'center',
           marginTop:5
         }}>          
-
+          
           <Avatar.Image 
             size={150}                
-            source={  isImageExit ? { uri: BASE_URL_IMAGE_PERFIL+userInfo.userId+'/perfil.jpg'} : require('../assets/user.png') }             
+            source={  isImageExit ? { uri: BASE_URL_IMAGE_PERFIL+userInfo.userId+'/perfil.jpg'+ "?" + onUpdateImage} : require('../assets/user.png') }             
             style={{              
               borderColor:'blue'              
             }}
+            key={Date.now()}
+            
             
           />
           
@@ -230,7 +317,8 @@ const MisDatos = () => {
             iconColor={'orange'}
             backgroundColor={'#DFDFDF'}
             size={30}
-            onPress={() => console.log('Pressed')}
+            // onPress={() => console.log('Pressed')}
+            onPress={pickImage}
           />
 
         </View>
@@ -390,7 +478,7 @@ const MisDatos = () => {
           value={entreC1}     
         />  
 
-      <HelperText style={{fontSize:15,color:'blue'}} type="info" visible={true}>
+        <HelperText style={{fontSize:15,color:'blue'}} type="info" visible={true}>
           Entre calle 2
         </HelperText>
         <TextInput
@@ -398,6 +486,22 @@ const MisDatos = () => {
           onChangeText={text=>setEntreC2(text)}  
           value={entreC2}     
         />  
+
+
+        <View style={{
+          alignSelf:'center',
+          alignItems:'center',
+          marginBottom:10
+        }}>
+          <Button 
+            mode="contained"
+            style={{
+              width:'80%'
+            }}
+            onPress={GuardarDatos}
+          >   Guardar   </Button>
+        </View>
+
 
       </ScrollView>
 
