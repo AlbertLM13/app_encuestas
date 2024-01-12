@@ -11,6 +11,7 @@ import { useContext } from "react";
 import MiCuenta from "./MiCuenta";
 import StackScreen from "./StackScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
+import MisReportes from "./MisReportes";
 
 
 import MisDatos from "./MisDatos";
@@ -61,27 +62,28 @@ function MyDrawer(){
         drawerContent={ props => <CustomDrawerContent  {...props} />  }
         
       >   
-          <DrawerNavigate.Screen 
-              name="MisDatos" component={MisDatos} 
-              options={{
-                  title:'Mis datos',
-                  
-              }}        
-          />
 
-          <DrawerNavigate.Screen 
-              name="MiCuenta" component={MiCuenta} 
-              options={{
-                  title:'Mi Cuenta'
-              }}        
-          />   
+        <DrawerNavigate.Screen 
+            name="MisReportes" component={MisReportes} 
+            options={{
+                title:'Mis Reportes'
+            }}        
+        /> 
 
-          <DrawerNavigate.Screen 
-              name="StackScreen1" component={StackScreen} 
-              options={{
-                  title:'StackScreen1'
-              }}        
-          />               
+        <DrawerNavigate.Screen 
+            name="MisDatos" component={MisDatos} 
+            options={{
+                title:'Mis datos',
+                
+            }}        
+        />
+
+        <DrawerNavigate.Screen 
+            name="MiCuenta" component={MiCuenta} 
+            options={{
+                title:'Mi Cuenta'
+            }}        
+        />                           
 
       </DrawerNavigate.Navigator>
       </>

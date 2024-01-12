@@ -6,7 +6,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Spinner from "react-native-loading-spinner-overlay";
 import axios from "axios";
 import { BASE_URL } from "../config";
-import { Button } from "react-native-paper";
+import { Button ,PaperProvider} from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
+import { Entypo } from '@expo/vector-icons';
 
 const MiCuenta = () => {
 
@@ -78,68 +80,136 @@ const MiCuenta = () => {
   }
 
   return (
-    <View style={{flex:1}}>       
+    // <View style={{flex:1}}>       
+    <PaperProvider>
+      <ScrollView>
         <Spinner visible={isLoading}/>
-        <Text
+        <View style={{
+          flex:1
+        }}>    
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: "center",
+              marginTop: "10%",
+            }}
+          >
+            Correo:
+          </Text>
+
+          <Text
           style={{
-            fontSize: 25,
-            textAlign: "center",
-            marginTop: "10%",
+            textAlign:'center',
+            color:'blue',
+            marginBottom:'5%'
           }}
-        >
-          Correo:
-        </Text>
+          >
+            {replaceBetween(0 ,index - 5,'********')}
+          </Text>
 
-        <Text
-        style={{
-          textAlign:'center',
-          color:'blue'
-        }}
-        >
-          {replaceBetween(0 ,index - 5,'********')}
-        </Text>
+          <Button 
+              onPress={()=>{GetColonias(cp)}}
+              buttonColor="orange" 
+              style={{
+                width:'40%',
+                // height:'7%',
+                alignSelf:'center'
+              }} 
+              icon="email" 
+              mode="contained">Cambiar correo</Button>
 
-        
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: "center",
+              marginTop: "10%",
+            }}
+          >
+            Celular:
+          </Text>
 
-        <Text
+          <Text
           style={{
-            fontSize: 25,
-            textAlign: "center",
-            marginTop: "10%",
+            textAlign:'center',
+            color:'blue',
+            marginBottom:'5%'
           }}
-        >
-          Telefono:
-        </Text>
+          >
+            {telefono.replace(/(.{0}).{7}/,"*******")}
+          </Text>
 
-        <Text
-        style={{
-          textAlign:'center',
-          color:'blue'
-        }}
-        >
-          {telefono.replace(/(.{0}).{7}/,"*******")}
-        </Text>
+          <Button 
+              onPress={()=>{GetColonias(cp)}}
+              buttonColor="orange" 
+              style={{
+                width:'40%',
+                // height:'7%',
+                alignSelf:'center'
+              }} 
+              icon="phone" 
+              mode="contained">Cambiar celular</Button>
 
-        <Text
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: "center",
+              marginTop: "10%",
+            }}
+          >
+            Contraseña:
+          </Text>
+
+          <Text
           style={{
-            fontSize: 25,
-            textAlign: "center",
-            marginTop: "10%",
+            textAlign:'center',
+            color:'blue',
+            marginBottom:'5%'
           }}
-        >
-          Contraseña:
-        </Text>
+          >
+            *********
+          </Text>
 
-        <Text
-        style={{
-          textAlign:'center',
-          color:'blue'
-        }}
-        >
-          *********
-        </Text>
+          <Button 
+              onPress={()=>{GetColonias(cp)}}
+              buttonColor="orange" 
+              style={{
+                // width:'40%',
+                // height:'7%',
+                alignSelf:'center'
+              }} 
+              icon="key" 
+              mode="contained">Cambiar contraseña</Button>
 
-    </View>
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: "center",
+              marginTop: "10%",
+            }}
+          >
+            Cancelar Cuenta
+          </Text>
+          <Text style={{
+            fontSize:11,
+            textAlign:'center',            
+            marginBottom:'5%'
+          }}>
+          Si cancelas tu cuenta, esta sera eliminada y no podras crear o ver los reportes
+          </Text>
+
+          <Button 
+              onPress={()=>{GetColonias(cp)}}
+              buttonColor="red" 
+              style={{
+                // width:'60%',              
+                alignSelf:'center'
+              }} 
+              icon="" 
+              mode="contained"><Entypo name="warning" size={20} color="white" />   Cancelar cuenta   <Entypo name="warning" size={20} color="white" /></Button>
+
+        </View>
+      </ScrollView>
+    </PaperProvider>
   );
 };
 
