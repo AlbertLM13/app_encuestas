@@ -13,7 +13,7 @@ const StackScreen = () => {
             marginTop: "20%",
           }}
         >
-          Stack Screen
+          Stack Screen 3
         </Text>
 
     </View>

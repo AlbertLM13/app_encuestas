@@ -8,6 +8,7 @@ import {
 } from "@react-navigation/drawer";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
+import MiCuenta from "./MiCuenta";
 import StackScreen from "./StackScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -67,6 +68,14 @@ function MyDrawer(){
                   
               }}        
           />
+
+          <DrawerNavigate.Screen 
+              name="MiCuenta" component={MiCuenta} 
+              options={{
+                  title:'Mi Cuenta'
+              }}        
+          />   
+
           <DrawerNavigate.Screen 
               name="StackScreen1" component={StackScreen} 
               options={{
