@@ -31,9 +31,7 @@ const MiCuenta = () => {
     AsyncStorage.getItem('DatosCuenta').then((value) => {
       if (value) {            
         var obj = JSON.parse(value);    
-        setMisDatosCuenta(obj);                          
-        
-        console.log(obj['email'].indexOf("@"));
+        setMisDatosCuenta(obj);                                          
 
         setCorreo(obj['email']);
         setIndex(obj['email'].indexOf("@"));
